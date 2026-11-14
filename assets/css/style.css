@@ -177,7 +177,7 @@ body.active { overflow: hidden; }
 
 .section-title { text-align: center; 
 color: var(--citrine);
-font-family: "Audiowide", sans-serif;}
+font-family: "Inter", system-ui, sans-serif;}
 
 /**
  * BADGE
@@ -304,7 +304,7 @@ font-family: "Audiowide", sans-serif;}
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .movie-card .card-banner::after {
@@ -396,7 +396,7 @@ font-family: "Audiowide", sans-serif;}
   text-align: center;
   font-weight: bold;
   font-size: large;
-  font-family: cursive;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .movie-card .card-title:is(:hover, :focus) { color: var(--citrine); }
@@ -632,7 +632,7 @@ font-family: "Audiowide", sans-serif;}
             margin: 0;
             text-align: center;
             font-size: 100px;
-            font-family: "Audiowide", sans-serif;
+            font-family: "Inter", system-ui, sans-serif;
             font-style: italic;
             
             }

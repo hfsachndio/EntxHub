@@ -1,182 +1,111 @@
 'use strict';
 
-/**
- * navbar variables
- */
+/* Shared page behaviour: mobile menu, sticky header, go-to-top, search toggle and sliders.
+   Every block checks that its elements exist, so the same file works on every page. */
 
-const navOpenBtn = document.querySelector("[data-menu-open-btn]");
-const navCloseBtn = document.querySelector("[data-menu-close-btn]");
-const navbar = document.querySelector("[data-navbar]");
-const overlay = document.querySelector("[data-overlay]");
+(function () {
+  const navOpenBtn = document.querySelector('[data-menu-open-btn]');
+  const navCloseBtn = document.querySelector('[data-menu-close-btn]');
+  const navbar = document.querySelector('[data-navbar]');
+  const overlay = document.querySelector('[data-overlay]');
 
-const navElemArr = [navOpenBtn, navCloseBtn, overlay];
+  if (navbar) {
+    [navOpenBtn, navCloseBtn, overlay].forEach(function (el) {
+      if (!el) return;
+      el.addEventListener('click', function () {
+        navbar.classList.toggle('active');
+        if (overlay) overlay.classList.toggle('active');
+        document.body.classList.toggle('active');
+      });
+    });
+    // Close the mobile menu after picking a link
+    navbar.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        navbar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.classList.remove('active');
+      });
+    });
+  }
 
-for (let i = 0; i < navElemArr.length; i++) {
-
-  navElemArr[i].addEventListener("click", function () {
-
-    navbar.classList.toggle("active");
-    overlay.classList.toggle("active");
-    document.body.classList.toggle("active");
-
+  const header = document.querySelector('[data-header]');
+  const goTopBtn = document.querySelector('[data-go-top]');
+  window.addEventListener('scroll', function () {
+    if (header) header.classList.toggle('active', window.scrollY >= 10);
+    if (goTopBtn) goTopBtn.classList.toggle('active', window.scrollY >= 500);
   });
 
-}
-
-
-
-/**
- * header sticky
- */
-
-const header = document.querySelector("[data-header]");
-
-window.addEventListener("scroll", function () {
-
-  window.scrollY >= 10 ? header.classList.add("active") : header.classList.remove("active");
-
-});
-
-
-
-/**
- * go top
- */
-
-const goTopBtn = document.querySelector("[data-go-top]");
-
-window.addEventListener("scroll", function () {
-
-  window.scrollY >= 500 ? goTopBtn.classList.add("active") : goTopBtn.classList.remove("active");
-
-});
-
-
-
-
-
-
-
-
-/*search box*/
-// Get the search button and search box elements
-const searchButton = document.getElementById("search-button");
-const searchBox = document.getElementById("search-box");
-
-// Add a click event listener to the search button
-searchButton.addEventListener("click", function() {
-  // Toggle the visibility of the search box
-  if (searchBox.style.display === "none" || !searchBox.style.display) {
-    searchBox.style.display = "block";
-  } else {
-    searchBox.style.display = "none";
-  }
-});
-
-// You can also add functionality to handle search submissions here
-const searchSubmitButton = document.getElementById("search-submit-button");
-searchSubmitButton.addEventListener("click", function() {
-  const searchTerm = document.querySelector(".search-box input").value;
-  // Perform the search using 'searchTerm' and take appropriate action
-  // For this example, we're not implementing the search functionality itself.
-});
-
-
-
-// Initialize the main slider
-const mainSlider = new Swiper('.main-slider', {
-  loop: true, // Enable loop mode
-  navigation: {
-      nextEl: '.main-slider .swiper-button-next',
-      prevEl: '.main-slider .swiper-button-prev',
-  },
-});
-
-// Initialize the thumbnail slider
-const thumbnailSlider = new Swiper('.thumbnail-slider', {
-  spaceBetween: 10, // Adjust the spacing between thumbnails as needed
-  slidesPerView: 3, // Number of thumbnails to show
-  slideToClickedSlide: true,
-});
-
-
-
-
-
-
-
-
-
-
-
-
-// Master DOManipulator v2 ------------------------------------------------------------
-const items = document.querySelectorAll('.slideshow-container .item'),
-  controls = document.querySelectorAll('.slideshow-container .control'),
-  headerItems = document.querySelectorAll('.slideshow-container .item-header'),
-  descriptionItems = document.querySelectorAll('.slideshow-container .item-description'),
-  activeDelay = .76,
-  interval = 5000;
-
-let current = 0;
-
-const slider = {
-  init: () => {
-    controls.forEach(control => control.addEventListener('click', (e) => { slider.clickedControl(e) }));
-    controls[current].classList.add('active');
-    items[current].classList.add('active');
-  },
-  nextSlide: () => {
-    slider.reset();
-    if (current === items.length - 1) current = -1;
-    current++;
-    controls[current].classList.add('active');
-    items[current].classList.add('active');
-    slider.transitionDelay(headerItems);
-    slider.transitionDelay(descriptionItems);
-  },
-  clickedControl: (e) => {
-    slider.reset();
-    clearInterval(intervalF);
-
-    const control = e.target,
-      dataIndex = Number(control.dataset.index);
-
-    control.classList.add('active');
-    items.forEach((item, index) => {
-      if (index === dataIndex) {
-        item.classList.add('active');
+  // Search box toggle (the search itself lives in entx.js)
+  const searchButton = document.getElementById('search-button') || document.querySelector('.search-btn');
+  const searchBox = document.getElementById('search-box');
+  if (searchButton && searchBox) {
+    searchButton.addEventListener('click', function () {
+      const open = searchBox.style.display === 'block';
+      searchBox.style.display = open ? 'none' : 'block';
+      if (!open) {
+        const input = searchBox.querySelector('input');
+        if (input) input.focus();
       }
-    })
-    current = dataIndex;
-    slider.transitionDelay(headerItems);
-    slider.transitionDelay(descriptionItems);
-    intervalF = setInterval(slider.nextSlide, interval);
-  },
-  reset: () => {
-    items.forEach(item => item.classList.remove('active'));
-    controls.forEach(control => control.classList.remove('active'));
-  },
-  transitionDelay: (items) => {
-    let seconds;
+    });
+  }
 
-    items.forEach(item => {
-      const children = item.childNodes;
-      let count = 1,
-        delay;
+  // Swiper sliders (only on pages that include Swiper)
+  if (typeof window.Swiper === 'function') {
+    if (document.querySelector('.main-slider')) {
+      new window.Swiper('.main-slider', {
+        loop: true,
+        navigation: { nextEl: '.main-slider .swiper-button-next', prevEl: '.main-slider .swiper-button-prev' },
+      });
+    }
+    if (document.querySelector('.thumbnail-slider')) {
+      new window.Swiper('.thumbnail-slider', { spaceBetween: 10, slidesPerView: 3, slideToClickedSlide: true });
+    }
+  }
 
-      item.classList.value === 'item-header' ? seconds = .015 : seconds = .007;
+  // Hero slideshow with clickable controls (movie pages)
+  const items = document.querySelectorAll('.slideshow-container .item');
+  const controls = document.querySelectorAll('.slideshow-container .control');
+  if (items.length && controls.length) {
+    const headerItems = document.querySelectorAll('.slideshow-container .item-header');
+    const descriptionItems = document.querySelectorAll('.slideshow-container .item-description');
+    const activeDelay = 0.76;
+    const interval = 5000;
+    let current = 0;
+    let timer;
 
-      children.forEach(child => {
-        if (child.classList) {
-          item.parentNode.classList.contains('active') ? delay = count * seconds + activeDelay : delay = count * seconds;
-          child.firstElementChild.style.transitionDelay = `${delay}s`;
-          count++;
-        }
-      })
-    })
-  },
-}
-
-let intervalF = setInterval(slider.nextSlide, interval);
-slider.init();
+    const reset = function () {
+      items.forEach(function (i) { i.classList.remove('active'); });
+      controls.forEach(function (c) { c.classList.remove('active'); });
+    };
+    const transitionDelay = function (list) {
+      list.forEach(function (item) {
+        const seconds = item.classList.value === 'item-header' ? 0.015 : 0.007;
+        let count = 1;
+        item.childNodes.forEach(function (child) {
+          if (child.classList && child.firstElementChild) {
+            const delay = item.parentNode.classList.contains('active') ? count * seconds + activeDelay : count * seconds;
+            child.firstElementChild.style.transitionDelay = delay + 's';
+            count++;
+          }
+        });
+      });
+    };
+    const show = function (index) {
+      reset();
+      current = (index + items.length) % items.length;
+      if (controls[current]) controls[current].classList.add('active');
+      items[current].classList.add('active');
+      transitionDelay(headerItems);
+      transitionDelay(descriptionItems);
+    };
+    controls.forEach(function (control, i) {
+      control.addEventListener('click', function () {
+        clearInterval(timer);
+        show(Number(control.dataset.index !== undefined ? control.dataset.index : i));
+        timer = setInterval(function () { show(current + 1); }, interval);
+      });
+    });
+    show(0);
+    timer = setInterval(function () { show(current + 1); }, interval);
+  }
+})();

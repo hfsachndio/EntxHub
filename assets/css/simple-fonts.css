@@ -1,0 +1,7 @@
+/* Site-wide typography: one clean sans-serif everywhere (no script/cursive fonts). */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+html, body, body *:not(ion-icon):not(.fa):not(.fab):not(.fas):not(.far):not([class*="fa-"]) {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif !important;
+  font-style: normal !important;
+}
+h1, h2, h3, .hero-title, .section-title h1 { letter-spacing: -0.02em; }

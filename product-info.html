@@ -11,7 +11,6 @@
     - favicon
   -->
   <link rel="shortcut icon" href="./assets/images/logo 114.png" type="image/svg+xml">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
   <!-- 
     - custom css link
   -->
@@ -23,6 +22,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/simple-fonts.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
 </head>
 
 <style>
@@ -220,27 +221,27 @@ hr {
   <ul class="navbar-list">
 
     <li>
-      <a href="./index.html" class="navbar-link" style="font-family: 'Pacifico', cursive;">Home</a>
+      <a href="./index.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Home</a>
     </li>
 
     <li>
-      <a href="movie.html" class="navbar-link" style="font-family: 'Pacifico', cursive;">Movie</a>
+      <a href="movie.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Movie</a>
     </li>
 
     <li>
-      <a href="events.html" class="navbar-link" style="font-family: 'Pacifico', cursive;">Events</a>
+      <a href="events.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Events</a>
     </li>
 
     <li>
-      <a href="games.html" class="navbar-link" style="font-family: 'Pacifico', cursive;">Games</a>
+      <a href="games.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Games</a>
     </li>
 
     <li>
-      <a href="shop.html" class="navbar-link" style="font-family: 'Pacifico', cursive;">Shop</a>
+      <a href="shop.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Shop</a>
     </li>
 
     <li>
-      <a href="aboutus.html" class="navbar-link" style="font-family: 'Pacifico', cursive;">About</a>
+      <a href="aboutus.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">About</a>
     </li>
 
 
@@ -347,7 +348,7 @@ hr {
 
             <div class="product-info">
               <br><br>
-              <h3 style="font-weight: bolder; font-family: Audiowide, sans-serif; color: rgb(22, 8, 8);background-color: #787a80;border: 3px solid black;">&nbsp;Barbie T-Shirt</h3>
+              <h3 style="font-weight: bolder; font-family: 'Inter', system-ui, sans-serif; color: rgb(22, 8, 8);background-color: #787a80;border: 3px solid black;">&nbsp;Barbie T-Shirt</h3>
             
               <p style="color: #ffffff;">Unleash your superhero style with our Avengers Logo T-Shirt and Shorts Set, perfect for fans of the iconic superhero team. The T-shirt features a vibrant Avengers logo, and the set provides comfort and versatility for various occasions.
 <br><br>
@@ -419,53 +420,10 @@ hr {
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
-  <script >
-    let featuedImg = document.getElementById('featured-image');
-let smallImgs = document.getElementsByClassName('small-Img');
-
-smallImgs[0].addEventListener('click', () => {
-  featuedImg.src = smallImgs[0].src;
-  smallImgs[0].classList.add('sm-card')
-  smallImgs[1].classList.remove('sm-card')
-  smallImgs[2].classList.remove('sm-card')
-  smallImgs[3].classList.remove('sm-card')
-  smallImgs[4].classList.remove('sm-card')
-})
-smallImgs[1].addEventListener('click', () => {
-  featuedImg.src = smallImgs[1].src;
-  smallImgs[0].classList.remove('sm-card')
-  smallImgs[1].classList.add('sm-card')
-  smallImgs[2].classList.remove('sm-card')
-  smallImgs[3].classList.remove('sm-card')
-  smallImgs[4].classList.remove('sm-card')
-})
-smallImgs[2].addEventListener('click', () => {
-  featuedImg.src = smallImgs[2].src;
-  smallImgs[0].classList.remove('sm-card')
-  smallImgs[1].classList.remove('sm-card')
-  smallImgs[2].classList.add('sm-card')
-  smallImgs[3].classList.remove('sm-card')
-  smallImgs[4].classList.remove('sm-card')
-})
-smallImgs[3].addEventListener('click', () => {
-  featuedImg.src = smallImgs[3].src;
-  smallImgs[0].classList.remove('sm-card')
-  smallImgs[1].classList.remove('sm-card')
-  smallImgs[2].classList.remove('sm-card')
-  smallImgs[3].classList.add('sm-card')
-  smallImgs[4].classList.remove('sm-card')
-})
-smallImgs[4].addEventListener('click', () => {
-  featuedImg.src = smallImgs[4].src;
-  smallImgs[0].classList.remove('sm-card')
-  smallImgs[1].classList.remove('sm-card')
-  smallImgs[2].classList.remove('sm-card')
-  smallImgs[3].classList.remove('sm-card')
-  smallImgs[4].classList.add('sm-card')
-})
-  </script>
+  
 
 
+  <script src="./assets/js/entx.js"></script>
 </body>
 
 </html>
