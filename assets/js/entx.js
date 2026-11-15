@@ -1,6 +1,7 @@
-/* EntXHub site features: sign-in, cart, product pages, search, bookings, game details,
-   movie details and real targets for every footer/social/genre link.
-   Data is kept in the visitor's browser (localStorage), so the static site works anywhere. */
+/* EntXHub site features: accounts, cart, checkout, event bookings, plans, watch history, search,
+   product / movie pages and real targets for every footer/social/genre link.
+   Everything is stored by the Node.js API in MongoDB (/api, see api/index.js). The browser only keeps
+   the session token and a guest cart until the visitor logs in. */
 (function () {
   'use strict';
 
@@ -9,6 +10,19 @@
     get(key, fallback) { try { const v = localStorage.getItem('entx-' + key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } },
     set(key, value) { try { localStorage.setItem('entx-' + key, JSON.stringify(value)); } catch (e) { /* storage blocked */ } },
   };
+  // ---------- API ----------
+  async function api(path, opts = {}) {
+    const sess = store.get('session', null);
+    const res = await fetch('/api/' + path, {
+      method: opts.method || (opts.body ? 'POST' : 'GET'),
+      headers: { 'Content-Type': 'application/json', ...(sess && sess.token ? { Authorization: 'Bearer ' + sess.token } : {}) },
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401 && sess) { store.set('session', null); }
+    if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+    return data;
+  }
   const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   const params = new URLSearchParams(location.search);
   const rs = (n) => 'Rs ' + Number(n).toLocaleString('en-PK', { minimumFractionDigits: 0 });
@@ -106,22 +120,14 @@
     { id: 'echoes-of-emotion', title: "Echoes of Emotion (Drama)", price: 1500, img: 'concert.jpg' },
   ];
 
-  // ---------- auth (demo accounts stored in this browser) ----------
+  // ---------- auth (accounts in MongoDB, passwords hashed with bcrypt, JWT session) ----------
   const auth = {
-    users: () => store.get('users', {}),
     current: () => store.get('session', null),
-    signUp(email, password) {
-      const users = auth.users();
-      if (users[email]) throw new Error('An account with this email or phone already exists. Please log in.');
-      users[email] = { email, password, name: email.split('@')[0] };
-      store.set('users', users); store.set('session', { email, name: users[email].name });
-    },
-    logIn(email, password) {
-      const u = auth.users()[email];
-      if (!u || u.password !== password) throw new Error('Incorrect email/phone or password.');
-      store.set('session', { email, name: u.name });
-    },
-    logOut() { store.set('session', null); },
+    async start(res) { store.set('session', { token: res.token, email: res.user.email, name: res.user.name, plan: res.user.plan }); await cart.mergeGuest(); },
+    async signUp(email, password) { await auth.start(await api('auth/signup', { body: { email, password } })); },
+    async logIn(email, password) { await auth.start(await api('auth/login', { body: { email, password } })); },
+    async demo(provider) { await auth.start(await api('auth/demo', { body: { provider } })); },
+    logOut() { store.set('session', null); store.set('cart', []); },
   };
 
   function renderAuthButtons() {
@@ -129,9 +135,9 @@
     document.querySelectorAll('a[href="loginmain.html"], a[href="./loginmain.html"]').forEach((a) => {
       const btn = a.querySelector('button');
       if (!user) return;
-      if (btn) btn.textContent = 'Log out (' + user.name + ')';
-      else if (/login/i.test(a.textContent)) a.textContent = 'Log out';
-      a.addEventListener('click', (e) => { e.preventDefault(); auth.logOut(); toast('You have been logged out.'); setTimeout(() => location.reload(), 600); });
+      if (btn) btn.textContent = 'My account';
+      else if (/login/i.test(a.textContent)) a.textContent = 'My account';
+      a.addEventListener('click', (e) => { e.preventDefault(); openAccount(); });
     });
   }
 
@@ -143,35 +149,51 @@
       e.preventDefault();
       const email = (inputs[0] && inputs[0].value || '').trim();
       const pass = inputs[1] ? inputs[1].value : '';
-      try {
-        if (!email) throw new Error('Please enter your email or phone.');
-        if (pass.length < 6) throw new Error('Password must be at least 6 characters.');
-        if (mode === 'signup') {
-          if (inputs[2] && inputs[2].value !== pass) throw new Error('Passwords do not match.');
-          auth.signUp(email, pass); toast('Account created. Welcome to EntXHub!');
-        } else {
-          auth.logIn(email, pass); toast('Welcome back!');
-        }
-        setTimeout(() => { location.href = params.get('next') || 'index.html'; }, 900);
-      } catch (err) { toast(err.message); }
+      (async () => {
+        try {
+          if (!email) throw new Error('Please enter your email or phone.');
+          if (pass.length < 6) throw new Error('Password must be at least 6 characters.');
+          const submit = form.querySelector('button, [type=submit]'); if (submit) submit.disabled = true;
+          if (mode === 'signup') {
+            if (inputs[2] && inputs[2].value !== pass) throw new Error('Passwords do not match.');
+            await auth.signUp(email, pass); toast('Account created. Welcome to EntXHub!');
+          } else {
+            await auth.logIn(email, pass); toast('Welcome back!');
+          }
+          setTimeout(() => { location.href = params.get('next') || 'index.html'; }, 900);
+        } catch (err) { toast(err.message); const submit = form.querySelector('button, [type=submit]'); if (submit) submit.disabled = false; }
+      })();
     });
     form.querySelectorAll('.go, .fb').forEach((el) => {
       el.style.cursor = 'pointer';
-      el.addEventListener('click', () => {
+      el.addEventListener('click', async () => {
         const provider = el.classList.contains('go') ? 'Google' : 'Facebook';
-        const email = 'guest.' + provider.toLowerCase() + '@entxhub.demo';
-        const users = auth.users(); users[email] = users[email] || { email, password: Math.random().toString(36), name: provider + ' user' };
-        store.set('users', users); store.set('session', { email, name: users[email].name });
-        toast('Signed in with ' + provider + ' (demo).');
-        setTimeout(() => { location.href = 'index.html'; }, 900);
+        try { await auth.demo(provider); toast('Signed in with a ' + provider + ' demo account.'); setTimeout(() => { location.href = params.get('next') || 'index.html'; }, 900); }
+        catch (err) { toast(err.message); }
       });
     });
   }
 
   // ---------- cart ----------
+  // Guests keep their cart in this browser; signed-in carts are saved to MongoDB.
   const cart = {
     items: () => store.get('cart', []),
-    save(items) { store.set('cart', items); updateBadges(); },
+    save(items) {
+      store.set('cart', items); updateBadges();
+      if (auth.current()) api('cart', { method: 'PUT', body: { items } }).catch((e) => toast(e.message));
+    },
+    async load() {
+      if (!auth.current()) return;
+      try { store.set('cart', await api('cart')); updateBadges(); } catch (e) { /* offline: keep local copy */ }
+    },
+    async mergeGuest() {
+      const guest = store.get('cart', []);
+      let server = [];
+      try { server = await api('cart'); } catch (e) { /* ignore */ }
+      for (const g of guest) { const f = server.find((s) => s.key === g.key); if (f) f.qty += g.qty; else server.push(g); }
+      store.set('cart', server);
+      if (guest.length) await api('cart', { method: 'PUT', body: { items: server } }).catch(() => {});
+    },
     add(item, qty = 1) {
       const items = cart.items();
       const key = item.id + (item.option ? '|' + item.option : '');
@@ -228,19 +250,23 @@
     if (checkout) checkout.onclick = () => {
       const items = cart.items();
       if (!items.length) return toast('Your cart is empty.');
+      if (!auth.current()) { toast('Please log in to place your order. Your cart is kept.'); setTimeout(() => { location.href = 'loginmain.html?next=cart.html'; }, 1100); return; }
       const total = summary.querySelectorAll('.row'); const totalText = [...total].pop().querySelectorAll('.col')[1].textContent;
       const user = auth.current();
       modal(`<h3>Checkout</h3><p>${items.length} item(s) · <b>${esc(totalText)}</b></p>
-        <form id="entx-co"><label>Full name</label><input required value="${user ? esc(user.name) : ''}">
-        <label>Delivery address</label><textarea required rows="2"></textarea>
-        <label>Payment</label><select><option>Cash on delivery</option><option>Card on delivery</option></select>
+        <form id="entx-co"><label>Full name</label><input name="name" required value="${user ? esc(user.name) : ''}">
+        <label>Delivery address</label><textarea name="address" required minlength="6" rows="2"></textarea>
+        <label>Payment</label><select name="payment"><option>Cash on delivery</option><option>Card on delivery</option></select>
         <button class="entx-btn" type="submit">Place order</button></form>`, (m, close) => {
-        m.querySelector('#entx-co').onsubmit = (e) => {
+        m.querySelector('#entx-co').onsubmit = async (e) => {
           e.preventDefault();
-          const orders = store.get('orders', []); const id = 'EX-' + Date.now().toString().slice(-6);
-          orders.push({ id, items, total: totalText, at: new Date().toISOString() }); store.set('orders', orders);
-          cart.save([]); close(); draw();
-          modal(`<h3>Order placed</h3><p>Your order <b>${id}</b> has been placed. You'll pay on delivery.</p><a class="entx-btn" href="shop.html">Continue shopping</a>`);
+          const f = Object.fromEntries(new FormData(e.target));
+          const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = 'Placing order…';
+          try {
+            const order = await api('orders', { body: { ...f, items: items.map((i) => ({ id: i.id, qty: i.qty, option: i.option })) } });
+            store.set('cart', []); updateBadges(); close(); draw();
+            modal(`<h3>Order placed</h3><p>Your order <b>${esc(order._id)}</b> for <b>${rs(order.total)}</b> has been saved. You'll pay on delivery.</p><a class="entx-btn" href="shop.html">Continue shopping</a><button class="entx-btn ghost" id="entx-acc">My orders</button>`, (mm) => { mm.querySelector('#entx-acc').onclick = openAccount; });
+          } catch (err) { toast(err.message); btn.disabled = false; btn.textContent = 'Place order'; }
         };
       });
     };
@@ -319,10 +345,19 @@
         modal(`<h3>Book: ${esc(ev.title)}</h3><p>${rs(ev.price)} per ticket</p>
           <label>Tickets</label><input type="number" id="entx-t" min="1" max="10" value="1">
           <p id="entx-tt">Total: ${rs(ev.price)}</p>
-          <button class="entx-btn" id="entx-cart">Add to cart</button><button class="entx-btn ghost" data-close>Cancel</button>`, (m, close) => {
+          <p id="entx-seats" style="color:#9a9">Checking seats…</p>
+          <button class="entx-btn" id="entx-book">Book now</button><button class="entx-btn ghost" id="entx-cart">Add to cart</button>`, (m, close) => {
           const t = m.querySelector('#entx-t');
           t.oninput = () => { m.querySelector('#entx-tt').textContent = 'Total: ' + rs(ev.price * Math.max(1, t.value | 0)); };
+          api('events').then((list) => { const live = list.find((x) => x.id === ev.id); m.querySelector('#entx-seats').textContent = live ? live.seatsLeft + ' seats left' : ''; }).catch(() => { m.querySelector('#entx-seats').textContent = ''; });
           m.querySelector('#entx-cart').onclick = () => { cart.add({ id: ev.id, title: ev.title, price: ev.price, img: ev.img, type: 'Event ticket' }, Math.max(1, t.value | 0)); close(); };
+          m.querySelector('#entx-book').onclick = async () => {
+            if (!auth.current()) { toast('Please log in to book tickets.'); setTimeout(() => { location.href = 'loginmain.html?next=events.html'; }, 1100); return; }
+            try {
+              const b = await api('bookings', { body: { eventId: ev.id, tickets: Math.max(1, t.value | 0) } });
+              close(); modal(`<h3>Booking confirmed</h3><p><b>${esc(b.title)}</b> · ${b.tickets} ticket(s) · ${rs(b.amount)}</p><p>Booking reference <b>${esc(b._id)}</b>. Show it at the gate.</p><button class="entx-btn" id="entx-acc">My bookings</button>`, (mm) => { mm.querySelector('#entx-acc').onclick = openAccount; });
+            } catch (err) { toast(err.message); }
+          };
         });
       });
     });
@@ -367,6 +402,10 @@
     if (story && m.id !== 'peaky-blinders') story.textContent = `${m.title} is a ${m.genres.toLowerCase()} ${m.type.toLowerCase()} available to stream on EntXHub. Press play to watch the official trailer.`;
     document.querySelectorAll('a[href="player.html"]').forEach((a) => a.setAttribute('href', 'player.html?id=' + m.id));
   }
+  function recordHistory() {
+    const m = MOVIES.find((x) => x.id === params.get('id')) || MOVIES.find((x) => x.id === 'peaky-blinders');
+    if (auth.current() && m) api('history', { body: { id: m.id } }).catch(() => {});
+  }
   function enhancePlayer() {
     const m = MOVIES.find((x) => x.id === params.get('id')) || MOVIES.find((x) => x.id === 'peaky-blinders');
     const link = document.querySelector('.trailer-link');
@@ -393,10 +432,22 @@
       ...EVENTS.map((e) => ({ title: e.title, sub: 'Event · ' + rs(e.price), img: e.img, href: 'events.html' })),
       ...Object.entries(GAMES).map(([f, [n, g]]) => ({ title: n, sub: 'Game · ' + g, img: 'game pictures/' + f, href: 'games.html' })),
     ];
-    const run = () => {
+    const href = (d) => d.kind === 'product' ? 'product-info.html?id=' + d.id : d.kind === 'event' ? 'events.html' : 'movie-details.html?id=' + d.id;
+    const sub = (d) => d.kind === 'product' ? 'Shop · ' + rs(d.price) : d.kind === 'event' ? 'Event · ' + rs(d.price) : d.type + ' · ' + (d.genres || []).slice(0, 2).join(', ');
+    let seq = 0;
+    const run = async () => {
       const q = input.value.trim().toLowerCase();
       if (!q) { results.classList.add('entx-hidden'); return; }
-      const hits = all.filter((x) => (x.title + ' ' + x.sub).toLowerCase().includes(q)).slice(0, 8);
+      const mine = ++seq;
+      let hits;
+      try {
+        // MongoDB search across titles, genres and products
+        const found = q.length < 2 ? [] : await api('catalog?q=' + encodeURIComponent(q));
+        hits = found.map((d) => ({ title: d.title, sub: sub(d), img: d.img, href: href(d) }));
+        hits.push(...all.filter((x) => x.sub.startsWith('Game') && x.title.toLowerCase().includes(q)));
+        hits = hits.slice(0, 8);
+      } catch (e) { hits = all.filter((x) => (x.title + ' ' + x.sub).toLowerCase().includes(q)).slice(0, 8); }
+      if (mine !== seq) return;
       results.innerHTML = hits.length ? hits.map((h) => `<a href="${esc(h.href)}"><img src="${esc(h.img)}" alt=""><span>${esc(h.title)}<small>${esc(h.sub)}</small></span></a>`).join('') : '<div class="none">No results for “' + esc(input.value) + '”</div>';
       results.classList.remove('entx-hidden');
     };
@@ -425,18 +476,43 @@
   }
 
   function wireContactForm() {
-    document.querySelectorAll('[data-plan]').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-plan]').forEach((b) => b.addEventListener('click', async () => {
       if (!auth.current()) { toast('Please log in or sign up to choose a plan.'); setTimeout(() => { location.href = 'loginmain.html?next=info.html%23pricing'; }, 1200); return; }
-      store.set('plan', b.dataset.plan); toast(b.dataset.plan + ' plan selected. Enjoy!');
+      try { const r = await api('subscription', { body: { plan: b.dataset.plan } }); const s2 = auth.current(); s2.plan = r.plan; store.set('session', s2); toast(r.plan + ' plan activated on your account (' + rs(r.price) + '/month).'); }
+      catch (err) { toast(err.message); }
     }));
     const form = document.getElementById('contact-form');
     if (!form) return;
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const msgs = store.get('messages', []);
-      msgs.push(Object.fromEntries(new FormData(form))); store.set('messages', msgs);
-      form.reset(); toast("Thanks! Your message has been sent. We'll reply within 24 hours.");
+      const btn = form.querySelector('button'); if (btn) btn.disabled = true;
+      try { await api('messages', { body: Object.fromEntries(new FormData(form)) }); form.reset(); toast("Thanks! Your message has been sent. We'll reply within 24 hours."); }
+      catch (err) { toast(err.message); }
+      finally { if (btn) btn.disabled = false; }
     });
+  }
+
+  // ---------- my account: orders, bookings, plan, watch history ----------
+  async function openAccount() {
+    const user = auth.current();
+    if (!user) { location.href = 'loginmain.html'; return; }
+    const close = modal(`<h3>My account</h3><p>${esc(user.name)} · ${esc(user.email)}</p><div id="entx-acc-body"><p>Loading…</p></div>
+      <button class="entx-btn" id="entx-logout">Log out</button>`, (m) => {
+      m.querySelector('#entx-logout').onclick = () => { auth.logOut(); toast('You have been logged out.'); setTimeout(() => location.reload(), 600); };
+    });
+    try {
+      const [me, orders, bookings, history] = await Promise.all([api('auth/me'), api('orders'), api('bookings'), api('history')]);
+      const body = document.getElementById('entx-acc-body'); if (!body) return;
+      const row = (l, r) => `<div style="display:flex;justify-content:space-between;gap:10px;border-top:1px solid #2c2c3d;padding:8px 0;font-size:14px"><span>${l}</span><span style="color:#ccc;white-space:nowrap">${r}</span></div>`;
+      body.innerHTML = `<p><b>Plan:</b> ${me.plan ? esc(me.plan) : 'Free'} · <a href="info.html#pricing" style="color:hsl(17,68%,58%)">change</a></p>
+        <h4 style="margin:14px 0 4px;color:#fff">Orders (${orders.length})</h4>${orders.map((o) => row(`<b>${esc(o._id)}</b> · ${o.lines.reduce((n, l) => n + l.qty, 0)} item(s)`, rs(o.total) + ' · ' + new Date(o.createdAt).toLocaleDateString())).join('') || '<p>No orders yet.</p>'}
+        <h4 style="margin:14px 0 4px;color:#fff">Bookings (${bookings.length})</h4>${bookings.map((b) => row(`${esc(b.title)} · ${b.tickets} ticket(s) <small style="color:${b.status === 'Confirmed' ? '#7c7' : '#c77'}">${b.status}</small>`, b.status === 'Confirmed' ? `<a href="#" data-cancel="${esc(b._id)}" style="color:#e88">Cancel</a>` : '')).join('') || '<p>No bookings yet.</p>'}
+        <h4 style="margin:14px 0 4px;color:#fff">Recently viewed</h4>${history.length ? '<p>' + history.map((h) => `<a href="movie-details.html?id=${esc(h.id)}" style="color:hsl(17,68%,58%)">${esc(h.title)}</a>`).join(', ') + '</p>' : '<p>Nothing yet.</p>'}`;
+      body.querySelectorAll('[data-cancel]').forEach((a) => a.onclick = async (e) => {
+        e.preventDefault();
+        try { await api('bookings/cancel', { body: { id: a.dataset.cancel } }); toast('Booking cancelled.'); close(); openAccount(); } catch (err) { toast(err.message); }
+      });
+    } catch (err) { const body = document.getElementById('entx-acc-body'); if (body) body.innerHTML = '<p>' + esc(err.message) + '</p>'; }
   }
 
   // ---------- init ----------
@@ -445,6 +521,7 @@
     setupSearch();
     renderAuthButtons();
     updateBadges();
+    cart.load();
     if (page === 'loginmain.html') wireAuthForm('login');
     if (page === 'signup.html') wireAuthForm('signup');
     if (page === 'shop.html') enhanceShop();
@@ -453,7 +530,7 @@
     if (page === 'events.html') enhanceEvents();
     if (page === 'games.html') enhanceGames();
     if (page === 'movie.html' || page === 'showmore.html') enhanceMovieCards();
-    if (page === 'movie-details.html') enhanceMovieDetails();
+    if (page === 'movie-details.html') { enhanceMovieDetails(); recordHistory(); }
     if (page === 'player.html') enhancePlayer();
     if (page === 'info.html') wireContactForm();
   });

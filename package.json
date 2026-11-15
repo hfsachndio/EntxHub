@@ -1,0 +1,16 @@
+{
+  "name": "entxhub",
+  "private": true,
+  "type": "module",
+  "description": "EntXHub entertainment website with a Node.js + MongoDB API (Vercel serverless functions)",
+  "scripts": {
+    "dev": "node test/dev-server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0"
+  }
+}
