@@ -2,18 +2,34 @@
 // server, so a visitor can't change what they pay by editing the page.
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
+// Shop products. Prices (PKR, taxes included) are always read from here on the server.
+// [id, title, price, compareAt, img, stock, category, franchise, colors, sizes, relatedTitle, description, material]
 export const PRODUCTS = [
-  ["barbie-tshirt", "Barbie T-Shirt", 1600, "assets/images/shop1.jpg", 40], ["barbie-croptop", "Barbie CropTop", 1900, "assets/images/shop2.jpg", 25],
-  ["batman-tshirt", "Batman T-Shirt", 1600, "assets/images/shop3.jpg", 30], ["dark-knight-shirt", "Dark Knight Shirt", 1500, "assets/images/shop4.jpg", 18],
-  ["captain-america", "Captain America", 1300, "assets/images/shop5.jpg", 22], ["avengers-tshirt", "Avengers T-Shirt", 1450, "assets/images/shop6.jpg", 35],
-  ["simba-tshirt", "Simba T-Shirt", 1500, "assets/images/shop7.jpg", 20], ["barbie-tshirt-classic", "Barbie T-Shirt (Classic)", 1200, "assets/images/shop1.jpg", 15],
-].map(([id, title, price, img, stock]) => ({ _id: `product:${id}`, kind: "product", id, title, price, img, stock, category: "Clothing" }));
+  ["barbie-tshirt", "Barbie Logo T-Shirt", 1600, 2000, "assets/images/shop1.jpg", 40, "T-Shirts", "Barbie", ["Pink"], ["S", "M", "L", "XL"], "barbie",
+    "Soft pastel-pink tee with the glitter Barbie logo across the chest. Relaxed fit with dropped shoulders.", "100% combed cotton, 180 GSM"],
+  ["barbie-croptop", "Barbie Crop Top", 1900, null, "assets/images/shop2.jpg", 25, "Tops", "Barbie", ["Pink"], ["S", "M", "L"], "barbie",
+    "Boxy cropped top in bubblegum pink with the classic Barbie script logo.", "95% cotton, 5% elastane"],
+  ["batman-tshirt", "Batman Pocket T-Shirt", 1600, null, "assets/images/shop3.jpg", 30, "T-Shirts", "DC", ["White"], ["S", "M", "L", "XL"], "the-dark-knight-rises",
+    "Clean white tee with a Batman comic-panel print on the chest pocket.", "100% cotton jersey"],
+  ["dark-knight-shirt", "Dark Knight T-Shirt", 1500, 1800, "assets/images/shop4.jpg", 18, "T-Shirts", "DC", ["Black"], ["S", "M", "L", "XL"], "the-dark-knight-rises",
+    "Black tee with a bold Dark Knight bat graphic in electric blue.", "100% cotton, 200 GSM"],
+  ["captain-america", "Captain America T-Shirt", 1300, null, "assets/images/shop5.jpg", 22, "T-Shirts", "Marvel", ["White"], ["S", "M", "L", "XL"], "avengers-infinity-war",
+    "White tee with a retro Captain America comic print.", "100% cotton"],
+  ["avengers-tshirt", "Avengers Lounge Set", 2450, 2900, "assets/images/shop6.jpg", 35, "Sets", "Marvel", ["Cream"], ["S", "M", "L"], "avengers-infinity-war",
+    "Two-piece tee and shorts set covered in Spider-Man, Iron Man and Captain America badges.", "100% cotton, brushed inside"],
+  ["simba-tshirt", "Lion King Simba T-Shirt", 1500, null, "assets/images/shop7.jpg", 20, "T-Shirts", "Disney", ["Cream"], ["S", "M", "L"], null,
+    "All-over Simba print on a soft cream tee.", "100% organic cotton"],
+  ["barbie-tshirt-classic", "Barbie Logo T-Shirt (Kids)", 1200, null, "assets/images/shop1.jpg", 15, "Kids", "Barbie", ["Pink"], ["4-5Y", "6-7Y", "8-9Y", "10-11Y"], "barbie",
+    "The Barbie glitter-logo tee in kids' sizes.", "100% combed cotton"],
+].map(([id, title, price, compareAt, img, stock, category, franchise, colors, sizes, relatedTitle, description, material]) =>
+  ({ _id: `product:${id}`, kind: "product", id, title, price, compareAt, img, stock, category, franchise, colors, sizes, relatedTitle, description, material }));
 
 export const EVENTS = [
   ["music-night", "Unforgettable Night of Music", 1200, "koko.jpg", 300], ["carnival", "Carnival", 1000, "themepark.jpg", 500],
   ["boat-parade", "Boat Parade", 800, "boat.jpg", 200], ["echoes-of-emotion", "Echoes of Emotion (Drama)", 1500, "concert.jpg", 150],
 ].map(([id, title, price, img, capacity]) => ({ _id: `event:${id}`, kind: "event", id, title, price, img, capacity }));
 
+const FRANCHISE = { barbie: "Barbie", "the-dark-knight-rises": "DC", joker: "DC", "avengers-infinity-war": "Marvel", "black-panther": "Marvel", "doctor-strange-in-the-multiverse-of-madness": "Marvel", loki: "Marvel" };
 export const TITLES = [
   ["The Dark Knight Rises", "Movie", "assets/images/m1.png", "Action, Crime, Drama"], ["Maula Jatt", "Movie", "assets/images/m5.png", "Action, Drama"],
   ["Inception", "Movie", "assets/images/m2.png", "Action, Science Fiction, Thriller"], ["Interstellar", "Movie", "assets/images/m3.png", "Adventure, Drama, Science Fiction"],
@@ -33,7 +49,17 @@ export const TITLES = [
   ["Andrew Tate", "Podcast", "assets/images/p5.png", "Talk, Interview"], ["Tauha Ibne Jalil", "Podcast", "assets/images/p1.png", "Talk, Lifestyle"],
   ["Gold Minds", "Podcast", "assets/images/p4.png", "Talk, Business"], ["Junaid Akram", "Podcast", "assets/images/p2.png", "Talk, Comedy"],
   ["Muzammil Hassan", "Podcast", "assets/images/p3.png", "Talk, Education"],
-].map(([title, type, img, genres]) => ({ _id: `title:${slug(title)}`, kind: "title", id: slug(title), title, type, img, genres: genres.split(", ") }));
+].map(([title, type, img, genres]) => ({ _id: `title:${slug(title)}`, kind: "title", id: slug(title), title, type, img, genres: genres.split(", "), franchise: FRANCHISE[slug(title)] ?? null }));
 
 export const PLANS = { Free: 0, Plus: 499, Premium: 999 };
 export const ALL = [...PRODUCTS, ...EVENTS, ...TITLES];
+// Bump when catalog fields change so existing databases pick up the new details (stock is kept).
+export const CATALOG_VERSION = 2;
+
+// Discount codes, validated on the server at checkout.
+export const COUPONS = {
+  WELCOME10: { type: "percent", value: 10, label: "10% off your order" },
+  ENTX200: { type: "fixed", value: 200, min: 2000, label: "Rs 200 off orders over Rs 2,000" },
+  FREESHIP: { type: "shipping", value: 0, label: "Free standard delivery" },
+};
+export const SHIPPING = { standard: { label: "Standard (3–5 days)", fee: 200, freeOver: 3000 }, express: { label: "Express (next day)", fee: 450 } };

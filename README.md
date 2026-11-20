@@ -6,13 +6,24 @@ EntXHub is a multi-page entertainment website where visitors can browse **movies
 
 **Live site:** https://entxhub.vercel.app
 
+## AI
+
+| Feature | Type | Where |
+|---|---|---|
+| **Recommendations** | Implicit matrix factorisation (ALS) over titles and products in one space | "Recommended for you" on Watch and Shop, "More like this" and "Shop the look" on title pages, "Customers also bought" on product pages. Hit@10 0.62 vs 0.39 for most-popular |
+| **Review sentiment** | NLP: Naive Bayes trained on 12,000+ real human-labelled movie and product reviews | Sentiment on every review, live preview while writing, AI review summary per aspect (fit, fabric, print, delivery, price). 78% accuracy on held-out reviews |
+
+Training, evaluation and model cards: [`ml/`](ml/README.md). Both models run in the Node.js API, no paid AI service.
+
 ## Features
 - **Accounts:** sign up and log in with passwords hashed by bcrypt and a JWT session; demo Google/Facebook sign-in; "My account" with orders, bookings, plan and recently viewed titles
 - **Search:** live MongoDB search across movies, anime, web series, podcasts, events and products (titles, genres, categories)
 - **Watch:** 35 movies, web series, anime and podcasts; every poster, card and carousel slide opens its own details page, and Play opens an in-site player with the official trailer (YouTube privacy-enhanced embed)
-- **Shop:** price filter, colour/size pickers, product pages with size and quantity, quick add to cart
+- **Shop (full e-commerce):** search, category/franchise/price filters and sorting; product pages with sizes, stock levels, size guide, sale prices, structured data and the related film's trailer; wishlist; reviews and ratings with verified-purchase badges; cart with quantity, save-for-later, discount codes (WELCOME10, ENTX200, FREESHIP) and a free-delivery progress bar; standard / express delivery
+- **Checkout & payments:** delivery details, **Stripe Checkout** (enabled when `STRIPE_SECRET_KEY` is set; test mode), a built-in **test-card gateway** that follows Stripe's test cards (4242… succeeds, 4000…0002 is declined) and stores only the last 4 digits, or cash on delivery. Stock is reserved atomically before payment and released if payment fails
+- **Orders:** confirmation page, status timeline (placed → paid → processing → shipped → out for delivery → delivered) with a tracking number, order history, printable invoice, cancellation with refund and restock
 - **Events:** live seats left per event, instant booking (capacity enforced on the server) and cancellation
-- **Cart and checkout:** guest cart kept in the browser and merged into the account on login; signed-in carts saved in MongoDB; orders priced on the server with atomic stock checks
+- **Cart:** guest cart kept in the browser and merged into the account on login; signed-in carts saved in MongoDB; everything priced on the server
 - **Games:** every game opens its trailer in a pop-up player, with a link to play it or its official page
 - **Help pages:** pricing plans, FAQ, help center, terms, privacy and a working contact form
 - **Home page:** every slide, scrolling picture and section title links to its page, title, game, event or product
@@ -24,11 +35,12 @@ EntXHub is a multi-page entertainment website where visitors can browse **movies
 | | |
 |---|---|
 | API | `api/index.js` — one Vercel serverless function (Node.js 20), routed by path |
-| Database | MongoDB Atlas (free cluster via the Vercel integration): `users`, `carts`, `orders`, `bookings`, `catalog`, `history`, `messages` with indexes; catalog seeded on first run |
-| Security | bcrypt password hashes, JWT bearer tokens, server-side prices, stock and seat checks, input validation |
+| Database | MongoDB Atlas (free cluster via the Vercel integration): `users`, `carts`, `orders`, `bookings`, `catalog`, `reviews`, `wishlists`, `history`, `messages` with indexes; catalog seeded on first run |
+| Security | bcrypt password hashes, JWT bearer tokens, server-side prices, coupons, stock and seat checks, card numbers never stored, input validation |
+| SEO | Page titles and descriptions, Open Graph cards, Product and WebSite JSON-LD, canonical URLs, robots.txt and a sitemap of every product and title |
 | Tests | `npm test` — end-to-end API tests (in-memory store, same code paths) |
 
-Endpoints: `auth/signup`, `auth/login`, `auth/demo`, `auth/me`, `catalog`, `events`, `cart` (GET/PUT), `orders`, `bookings`, `bookings/cancel`, `subscription`, `history`, `messages`, `health`.
+Endpoints: `products`, `product`, `cart/quote`, `order`, `orders/cancel`, `reviews`, `wishlist`, `recommendations`, `similar`, `ai/sentiment`, `ai/models`, `config`, `auth/signup`, `auth/login`, `auth/demo`, `auth/me`, `catalog`, `events`, `cart` (GET/PUT), `orders`, `bookings`, `bookings/cancel`, `subscription`, `history`, `messages`, `health`.
 
 ## Pages
 
@@ -39,7 +51,7 @@ Endpoints: `auth/signup`, `auth/login`, `auth/demo`, `auth/me`, `catalog`, `even
 | `player.html` | In-site trailer player for the chosen title (`player.html?id=`) |
 | `games.html` | Games catalogue |
 | `events.html` | Upcoming events |
-| `shop.html`, `product-info.html`, `cart.html` | Merchandise shop, product page and cart |
+| `shop.html`, `product-info.html`, `cart.html`, `checkout.html`, `order.html`, `orders.html`, `wishlist.html` | Store: catalogue, product page, cart, checkout, order tracking, order history, wishlist (rendered by `assets/js/shop.js`) |
 | `aboutus.html`, `loginmain.html`, `signup.html` | About, sign-in and sign-up pages |
 | `info.html` | Pricing, FAQ, help center, terms, privacy and contact form |
 

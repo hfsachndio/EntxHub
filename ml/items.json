@@ -1,0 +1,434 @@
+{
+ "items": [
+  {
+   "key": "title:the-dark-knight-rises",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Crime",
+    "Drama"
+   ],
+   "franchise": "DC"
+  },
+  {
+   "key": "title:maula-jatt",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Drama"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:inception",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Science Fiction",
+    "Thriller"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:interstellar",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Adventure",
+    "Drama",
+    "Science Fiction"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:jurassic-world",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Science Fiction"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:oppenheimer",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Biography",
+    "Drama",
+    "History"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:avengers-infinity-war",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Science Fiction"
+   ],
+   "franchise": "Marvel"
+  },
+  {
+   "key": "title:tokyo-ghoul",
+   "kind": "title",
+   "type": "Anime",
+   "genres": [
+    "Action",
+    "Dark Fantasy",
+    "Horror"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:death-note",
+   "kind": "title",
+   "type": "Anime",
+   "genres": [
+    "Mystery",
+    "Psychological Thriller"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:attack-on-titan",
+   "kind": "title",
+   "type": "Anime",
+   "genres": [
+    "Action",
+    "Dark Fantasy"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:dragon-ball-z",
+   "kind": "title",
+   "type": "Anime",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Martial Arts"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:one-piece",
+   "kind": "title",
+   "type": "Anime",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Comedy"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:pokemon",
+   "kind": "title",
+   "type": "Anime",
+   "genres": [
+    "Adventure",
+    "Family"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:naruto",
+   "kind": "title",
+   "type": "Anime",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Martial Arts"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:lucifer",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Crime",
+    "Drama",
+    "Fantasy"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:dark",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Mystery",
+    "Science Fiction",
+    "Thriller"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:money-heist",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Action",
+    "Crime",
+    "Thriller"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:peaky-blinders",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Crime",
+    "Drama"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:loki",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Fantasy"
+   ],
+   "franchise": "Marvel"
+  },
+  {
+   "key": "title:squid-game",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Drama",
+    "Survival",
+    "Thriller"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:stranger-things",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Drama",
+    "Horror",
+    "Science Fiction"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:vikings-valhalla",
+   "kind": "title",
+   "type": "Web Series",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Drama"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:barbie",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Comedy",
+    "Adventure",
+    "Fantasy"
+   ],
+   "franchise": "Barbie"
+  },
+  {
+   "key": "title:death-on-the-nile",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Crime",
+    "Mystery",
+    "Thriller"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:joker",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Crime",
+    "Drama",
+    "Thriller"
+   ],
+   "franchise": "DC"
+  },
+  {
+   "key": "title:black-panther",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Science Fiction"
+   ],
+   "franchise": "Marvel"
+  },
+  {
+   "key": "title:doctor-strange-in-the-multiverse-of-madness",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Fantasy",
+    "Horror"
+   ],
+   "franchise": "Marvel"
+  },
+  {
+   "key": "title:the-northman",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Adventure",
+    "Drama"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:memory",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Crime",
+    "Thriller"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:the-unbearable-weight-of-massive-talent",
+   "kind": "title",
+   "type": "Movie",
+   "genres": [
+    "Action",
+    "Comedy"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:andrew-tate",
+   "kind": "title",
+   "type": "Podcast",
+   "genres": [
+    "Talk",
+    "Interview"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:tauha-ibne-jalil",
+   "kind": "title",
+   "type": "Podcast",
+   "genres": [
+    "Talk",
+    "Lifestyle"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:gold-minds",
+   "kind": "title",
+   "type": "Podcast",
+   "genres": [
+    "Talk",
+    "Business"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:junaid-akram",
+   "kind": "title",
+   "type": "Podcast",
+   "genres": [
+    "Talk",
+    "Comedy"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "title:muzammil-hassan",
+   "kind": "title",
+   "type": "Podcast",
+   "genres": [
+    "Talk",
+    "Education"
+   ],
+   "franchise": null
+  },
+  {
+   "key": "product:barbie-tshirt",
+   "kind": "product",
+   "type": "T-Shirts",
+   "genres": [],
+   "franchise": "Barbie"
+  },
+  {
+   "key": "product:barbie-croptop",
+   "kind": "product",
+   "type": "Tops",
+   "genres": [],
+   "franchise": "Barbie"
+  },
+  {
+   "key": "product:batman-tshirt",
+   "kind": "product",
+   "type": "T-Shirts",
+   "genres": [],
+   "franchise": "DC"
+  },
+  {
+   "key": "product:dark-knight-shirt",
+   "kind": "product",
+   "type": "T-Shirts",
+   "genres": [],
+   "franchise": "DC"
+  },
+  {
+   "key": "product:captain-america",
+   "kind": "product",
+   "type": "T-Shirts",
+   "genres": [],
+   "franchise": "Marvel"
+  },
+  {
+   "key": "product:avengers-tshirt",
+   "kind": "product",
+   "type": "Sets",
+   "genres": [],
+   "franchise": "Marvel"
+  },
+  {
+   "key": "product:simba-tshirt",
+   "kind": "product",
+   "type": "T-Shirts",
+   "genres": [],
+   "franchise": "Disney"
+  },
+  {
+   "key": "product:barbie-tshirt-classic",
+   "kind": "product",
+   "type": "Kids",
+   "genres": [],
+   "franchise": "Barbie"
+  }
+ ]
+}

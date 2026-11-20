@@ -5,8 +5,10 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EntXHUb_Imaginary World One Click Away</title>
-  <!-- -->
+  <title>Your cart · EntXHub</title>
+  <meta name="description" content="Review your cart, apply a discount code and choose delivery.">
+  <link rel="canonical" href="https://entxhub.vercel.app/cart.html">
+  <meta name="robots" content="noindex">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -31,198 +33,7 @@
   <link rel="stylesheet" href="assets/css/simple-fonts.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
 </head>
-<style>
- 
- /* Shopping Cart Styles */
 
-.shopping-cart {
-    /* background: #dddddd6e; */
-    min-height: 85vh;
-    vertical-align: middle;
-    display: flex;
-    font-family: sans-serif;
-    font-size: 0.8rem;
-    font-weight: bold;
-    
-}
-
-.shopping-cart .title {
-    margin-bottom: 5vh;
-}
-
-.shopping-cart .card {
-    margin: auto;
-    max-width: 950px;
-    width: 90%;
-    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 1rem;
-    border: transparent;
-}
-
-@media (max-width: 767px) {
-    .shopping-cart .card {
-        margin: 3vh auto;
-    }
-
-    .shopping-cart .cart {
-        padding: 4vh;
-        border-bottom-left-radius: unset;
-        border-top-right-radius: 1rem;
-    }
-
-    .shopping-cart .summary {
-        border-top-right-radius: unset;
-        border-bottom-left-radius: 1rem;
-    }
-}
-
-.shopping-cart .cart {
-    background-color: #fff;
-    padding: 4vh 5vh;
-    border-bottom-left-radius: 1rem;
-    border-top-left-radius: 1rem;
-}
-
-.shopping-cart .summary {
-    background-color: hsla(17, 68%, 58%, 0.623);
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-    padding: 4vh;
-    color: rgb(65, 65, 65);
-}
-
-/* .shopping-cart @media(max-width:767px) {
-    .summary {
-        border-top-right-radius: unset;
-        border-bottom-left-radius: 1rem;
-    }
-} */
-
-
-.shopping-cart .summary .col-2 {
-    padding: 0;
-}
-
-.shopping-cart .summary .col-10 {
-    padding: 0;
-}
-
-.shopping-cart .row {
-    margin: 0;
-}
-
-.shopping-cart .title b {
-    font-size: 1.5rem;
-}
-
-.shopping-cart .main {
-    margin: 0;
-    padding: 2vh 0;
-    width: 100%;
-}
-
-.shopping-cart .col-2,
-.shopping-cart .col {
-    padding: 0 1vh;
-}
-
-.shopping-cart a {
-    padding: 0 1vh;
-}
-
-.shopping-cart .close {
-    margin-left: auto;
-    font-size: 0.7rem;
-}
-
-.shopping-cart img {
-    width: 3.5rem;
-}
-
-.shopping-cart .back-to-shop {
-    margin-top: 4.5rem;
-}
-
-.shopping-cart h5 {
-    margin-top: 4vh;
-}
-
-.shopping-cart hr {
-    margin-top: 1.25rem;
-}
-
-.shopping-cart form {
-    padding: 2vh 0;
-}
-
-.shopping-cart select {
-    border: 1px solid rgba(0, 0, 0, 0.137);
-    padding: 1.5vh 1vh;
-    margin-bottom: 4vh;
-    outline: none;
-    width: 100%;
-    background-color: rgb(247, 247, 247);
-}
-
-.shopping-cart input {
-    border: 1px solid rgba(0, 0, 0, 0.137);
-    padding: 1vh;
-    margin-bottom: 4vh;
-    outline: none;
-    width: 100%;
-    background-color: rgb(247, 247, 247);
-}
-
-.shopping-cart input:focus::-webkit-input-placeholder {
-    color: transparent;
-}
-
-.shopping-cart .btn {
-    background-color: hsl(12, 91%, 47%);
-    border-color: #0000;
-    color: white;
-    width: 100%;
-    font-size: 0.7rem;
-    margin-top: 4vh;
-    padding: 1vh;
-    border-radius: 0;
-}
-
-.shopping-cart .btn:focus {
-    box-shadow: none;
-    outline: none;
-    box-shadow: none;
-    color: white;
-    -webkit-box-shadow: none;
-    -webkit-user-select: none;
-    transition: none;
-}
-
-.shopping-cart .btn:hover {
-    color: white;
-}
-
-.shopping-cart a {
-    color: black;
-}
-
-.shopping-cart a:hover {
-    color: black;
-    text-decoration: none;
-}
-
-.shopping-cart #code {
-    background-image: linear-gradient(to left, rgba(255, 255, 255, 0.253), rgba(255, 255, 255, 0.185)),
-        url("https://img.icons8.com/small/16/000000/long-arrow-right.png");
-    background-repeat: no-repeat;
-    background-position-x: 95%;
-    background-position-y: center;
-}
-
-
-/* Add more styles as needed */
-
-</style>
 <body id="top" >
  
 <section class="umair">
@@ -259,7 +70,7 @@
           </li>
 
           <li>
-            <a href="shop.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Shop</a>
+            <a href="shop.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;color: hsl(17, 68%, 58%);">Shop</a>
           </li>
 
           <li>
@@ -271,9 +82,9 @@
         <button class="search-btn" id="search-button">
           <ion-icon name="search-outline"></ion-icon>
         </button>
-          <a href="cart.html">
-           <button class="cartlogo" id="cartlogo" style="color: hsl(17, 68%, 58%);">
-        <ion-icon name="cart"></ion-icon>
+        <a href="cart.html">
+          <button class="cartlogo" id="cartlogo">
+       <ion-icon name="cart"></ion-icon>
 </button></a>
         <div class="search-box" id="search-box">
           <input type="text" placeholder="&nbsp;Search..." style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-style: italic;">
@@ -350,124 +161,19 @@
 
 
 
+
+
+
   <main>
     <article>
-
-      <!-- 
-        - #HERO
-      -->
-
-      <section class="hero">
+      <section class="hero sx-hero">
         <div class="container">
-            <div class="shopping-cart">
-                
-            <div class="card">
-                <div class="row">
-                    <div class="col-md-8 cart">
-                        <div class="title">
-                            <div class="row">
-                                <div class="col"><h4><b>Shopping Cart</b></h4></div>
-                                <div class="col align-self-center text-right text-muted">3 items</div>
-                            </div>
-                        </div>    
-                        <div class="row border-top border-bottom">
-                            <div class="row main align-items-center">
-                                <div class="col-2"><img class="img-fluid" src="assets/images/shop2.jpg"></div>
-                                <div class="col">
-                                    <div class="row text-muted">Clothing</div>
-                                    <div class="row">Barbie Croptop</div>
-                                </div>
-                                <div class="col">
-                                    <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a>
-                                </div>
-                                <div class="col">Rs 1900.00 <span class="close">&#10005;</span></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="row main align-items-center">
-                                <div class="col-2"><img class="img-fluid" src="assets/images/shop5.jpg"></div>
-                                <div class="col">
-                                    <div class="row text-muted">Clothing</div>
-                                    <div class="row">Captain America</div>
-                                </div>
-                                <div class="col">
-                                    <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a>
-                                </div>
-                                <div class="col">Rs 1300.00 <span class="close">&#10005;</span></div>
-                            </div>
-                        </div>
-                        <div class="row border-top border-bottom">
-                            <div class="row main align-items-center">
-                                <div class="col-2"><img class="img-fluid" src="koko.jpg"></div>
-                                <div class="col">
-                                    <div class="row text-muted">Events</div>
-                                    <div class="row">Concert</div>
-                                </div>
-                                <div class="col">
-                                    <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a>
-                                </div>
-                                <div class="col">Rs 1200.00 <span class="close">&#10005;</span></div>
-                            </div>
-                        </div>
-                        <div class="back-to-shop"><a href="shop.html">&leftarrow;</a><span class="text-muted">Back to shop</span></div>
-                    </div>
-                    <div class="col-md-4 summary">
-                        <div><h5><b>Summary</b></h5></div>
-                        <hr>
-                        <div class="row">
-                            <div class="col" style="padding-left:0;">ITEMS</div>
-                            <div class="col text-right"> 3</div>
-                        </div>
-                        <div class="row">
-                            <div class="col" style="padding-left:0;">TOTAL</div>
-                            <div class="col text-right">Rs 4400.00</div>
-                        </div>
-                        <!-- <form>
-                            <p>SHIPPING</p>
-                            <select><option class="text-muted">Standard-Delivery- &euro;5.00</option></select>
-                            <p>GIVE CODE</p>
-                            <input id="code" placeholder="Enter your code">
-                        </form> -->
-                        <hr>
-                        <br><br>
-                        <div class="row">
-                            <div class="col" style="padding-left:0;">Delivery</div>
-                            <div class="col text-right">Rs 50.00</div>
-                        </div>
-                        <div class="row">
-                            <div class="col" style="padding-left:0;">Tax</div>
-                            <div class="col text-right">Rs 20.00</div>
-                        </div>
-                        <br><br><br>
-                        <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
-                            <div class="col">TOTAL PRICE</div>
-                            <div class="col text-right">RS 4470.00</div>
-                        </div>
-                        <button class="btn">CHECKOUT</button>
-                    </div>
-                </div>
-                
-            </div>
-
-
-</div>
-  </div>
-
-
+          <div id="shop-app" data-view="cart"><p class="sx-loading">Loading…</p></div>
+        </div>
+      </section>
+    </article>
+  </main>
 </section>
-
-      <!-- 
-        - #UPCOMING
-      -->
-
-
-
-      <!-- 
-        - #CTA
-      -->
-      
-  
-
 
   <!-- 
     - #FOOTER
@@ -582,6 +288,8 @@
 
 
 
+
+
   <!-- 
     - custom js link
   -->
@@ -594,6 +302,7 @@
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
   <script src="./assets/js/entx.js"></script>
+  <script src="./assets/js/shop.js"></script>
 </body>
 
 </html>

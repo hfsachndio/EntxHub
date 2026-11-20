@@ -1,0 +1,19 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  ml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: pip install -r ml/requirements.txt
+      - name: Train both models and check their quality
+        working-directory: ml
+        run: |
+          python train_sentiment.py
+          node export_items.mjs && python train_recommender.py
+          python -c "import json; s=json.load(open('reports/sentiment.json'))['multinomial_nb']; r=json.load(open('reports/recommender.json')); assert s['product_review_sentences']['accuracy'] > 0.72 and r['hit_at_10'] > r['popularity_hit_at_10'], (s, r); print(s, r)"
+      - run: npm install && npm test

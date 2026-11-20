@@ -1,0 +1,7 @@
+{
+ "hit_at_10": 0.6174,
+ "ndcg_at_10": 0.3596,
+ "popularity_hit_at_10": 0.3943,
+ "popularity_ndcg_at_10": 0.1948,
+ "users": 596
+}

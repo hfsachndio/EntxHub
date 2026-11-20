@@ -5,16 +5,23 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>product details</title>
+  <title>Product · EntXHub shop</title>
+  <meta name="description" content="Product details, sizes, stock, customer reviews with AI sentiment and personalised recommendations.">
+  <link rel="canonical" href="https://entxhub.vercel.app/product-info.html">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
   <!-- 
     - favicon
   -->
-  <link rel="shortcut icon" href="./assets/images/logo 114.png" type="image/svg+xml">
+  <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+
   <!-- 
     - custom css link
   -->
-  <link rel="stylesheet" href="./assets/css/style.css">
+   <link rel="stylesheet" href="./assets/css/style.css"> 
 
   <!-- 
     - google font link
@@ -26,184 +33,9 @@
   <link rel="stylesheet" href="assets/css/responsive.css">
 </head>
 
-<style>
- * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  /* background-image: url("assets/images/backgroundmain222.jpg"); */
-}
-body {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 30px;
-  
-}
-
-header {
-  margin-bottom: 20px;
-}
-
-.product-container {
-  
-  display: flex;
-  justify-content: start;
-  align-items: start;
-  gap: 40px;
-  background-color: #787a8086;
-  border-radius: 4px;
-  width: 1200px;
-}
-
-/* .img-card{
-    width: 40%;
-} */
-
-.img-card img {
-  width: 100%;
-  flex-shrink: 0;
-  border-radius: 4px;
-  height: 520px;
-  object-fit: cover;
-}
-
-.small-Card {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  margin-top: 15px;
-  gap: 12px;
-}
-
-.small-Card img {
-  width: 104px;
-  height: 104px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.small-Card img:active {
-  border: 1px solid #17696a;
-}
-
-.sm-card {
-  border: 2px solid darkred;
-}
-
-.product-info{
-  width: 60%;
-}
-.product-info h3 {
-  font-size: 32px;
-  font-family: Lato;
-  font-weight: 600;
-  line-height: 130%;
-}
-
-.product-info h5 {
-  font-size: 24px;
-  font-family: Lato;
-  font-weight: 500;
-  line-height: 130%;
-  color: #ff4242;
-  margin: 6px 0;
-}
-
-.product-info del {
-  color: #a9a9a9;
-}
-
-.product-info p {
-  color: #424551;
-  margin: 15px 0;
-  width: 70%;
-}
-
-.sizes p {
-  font-size: 22px;
-  color: black;
-}
-
-.size-option {
-  width: 200px;
-  height: 30px;
-  margin-bottom: 15px;
-  padding: 5px;
-}
-
-.quantity input {
-  width: 51px;
-  height: 33px;
-  margin-bottom: 15px;
-  padding: 6px;
-}
-/* 
-button {
-  background: #17696a;
-  border-radius: 4px;
-  padding: 10px 37px;
-  border: none;
-  color: white;
-  font-weight: 600;
-}
-
-button:hover {
-  background: #ff4242;
-  transition: ease-in 0.4s;
-} */
-
-.delivery {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 70%;
-  color: #787a80;
-  font-size: 12px;
-  font-family: Lato;
-  line-height: 150%;
-  letter-spacing: 1px;
-}
-
-hr {
-  color: #787a80;
-  width: 58%;
-  opacity: 0.67;
-}
-
-.pagination {
-    color: #787a80;
-    margin: 15px 0;
-    cursor: pointer;
-}
-
-@media screen and (max-width: 576px) {
-  .product-container{
-    flex-direction: column;
-  }
-  .small-Card img{
-    width: 80px;
-  }
-  .product-info{
-    width: 100%;
-  }
-  echo " product-details-page-html-css-js" >> README.md
-  .product-info p{
-    width: 100%;
-  }
-
-  .delivery{
-    width: 100%;
-  }
-
-  hr{
-    width: 100%;
-  }
-}
-
-</style>
-
-<body id="#top">
-
+<body id="top" >
+ 
+<section class="umair">
   <!-- 
     - #HEADER
   -->
@@ -214,48 +46,55 @@ hr {
       <div class="overlay" data-overlay></div>
 
       <a href="./index.html" class="logo">
-        <img src="readme-images/project-logo copywhite.png" alt="entxhub logo">
+        <img src="readme-images/project-logo copywhite.png" alt="EntxHub logo">
       </a>
 
       <div class="header-actions">
-  <ul class="navbar-list">
+<ul class="navbar-list">
 
-    <li>
-      <a href="./index.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Home</a>
-    </li>
+          <li>
+            <a href="./index.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Home</a>
+          </li>
 
-    <li>
-      <a href="movie.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Movie</a>
-    </li>
+          <li>
+            <a href="movie.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Watch</a>
+          </li>
 
-    <li>
-      <a href="events.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Events</a>
-    </li>
+          <li>
+            <a href="events.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Events</a>
+          </li>
 
-    <li>
-      <a href="games.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Games</a>
-    </li>
+          <li>
+            <a href="games.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Games</a>
+          </li>
 
-    <li>
-      <a href="shop.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">Shop</a>
-    </li>
+          <li>
+            <a href="shop.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;color: hsl(17, 68%, 58%);">Shop</a>
+          </li>
 
-    <li>
-      <a href="aboutus.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">About</a>
-    </li>
-
+          <li>
+            <a href="aboutus.html" class="navbar-link" style="font-family: 'Inter', system-ui, sans-serif;">About</a>
+          </li>
 
         </ul>
-        <button class="search-btn">
+        
+        <button class="search-btn" id="search-button">
           <ion-icon name="search-outline"></ion-icon>
         </button>
         <a href="cart.html">
           <button class="cartlogo" id="cartlogo">
        <ion-icon name="cart"></ion-icon>
 </button></a>
+        <div class="search-box" id="search-box">
+          <input type="text" placeholder="&nbsp;Search..." style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;font-style: italic;">
+          
+          
+        </div>
+        
        
 
-        <button class="btn btn-primary">Login</button>
+
+        <a href="loginmain.html"><button class="btn btn-primary" >Login</button></a>
 
       </div>
 
@@ -268,16 +107,16 @@ hr {
         <div class="navbar-top">
 
           <a href="./index.html" class="logo">
-            <img src="./assets/images/logo.svg" alt="Filmlane logo">
+            <img src="readme-images/project-logo copywhite.png" alt="EntXHUb logo">
           </a>
-
+ 
           <button class="menu-close-btn" data-menu-close-btn>
             <ion-icon name="close-outline"></ion-icon>
           </button>
 
         </div>
 
-      
+        
 
         <ul class="navbar-social-list">
 
@@ -322,79 +161,120 @@ hr {
 
 
 
+
+
   <main>
     <article>
-
-      <!-- 
-        - #MOVIE DETAIL
-      -->
-
-      
-      <section class="hero">
+      <section class="hero sx-hero">
         <div class="container">
-          <section class="product-container">
-            <!-- left side -->
-            <div class="img-card">
-                <img src="assets/images/shop1.jpg" alt="" id="featured-image">
-                <!-- small img -->
-                <div class="small-Card">
-                    <img src="assets/images/shop1.jpg" alt="" class="small-Img">
-                    <img src="assets/images/shop1.jpg" alt="" class="small-Img">
-                    <img src="assets/images/shop1.jpg" alt="" class="small-Img">
-                    <img src="assets/images/shop1.jpg" alt="" class="small-Img">
-                </div>
-            </div>
-            <!-- Right side -->
-
-            <div class="product-info">
-              <br><br>
-              <h3 style="font-weight: bolder; font-family: 'Inter', system-ui, sans-serif; color: rgb(22, 8, 8);background-color: #787a80;border: 3px solid black;">&nbsp;Barbie T-Shirt</h3>
-            
-              <p style="color: #ffffff;">Unleash your superhero style with our Avengers Logo T-Shirt and Shorts Set, perfect for fans of the iconic superhero team. The T-shirt features a vibrant Avengers logo, and the set provides comfort and versatility for various occasions.
-<br><br>
-               <span style="font-weight: bold; color: #f5f5fc;"> Key Features:</span>
-                
-                High-quality cotton blend for comfort
-                <br>Bold Avengers logo on the T-shirt
-                <br>Classic fit and relaxed style
-                
-              
-                
-
-                <div class="sizes">
-                    <p style="font-weight: bold;color: #feffff;">Size:</p>
-                    <select name="Size" id="size" class="size-option" style=" box-shadow: 
-                    0 0 0 2px black, /* Outer black border (adjust the width as needed) */
-                    0 0 0 4px white;
-                    border-radius: 4px;
-                    background-color: #787a80; ">
-                        <option value="xxl">XXL</option>
-                        <option value="xl">XL</option>
-                        <option value="medium">Medium</option>
-                        <option value="small">Small</option>
-                    </select>
-                </div>
-    
-                <div class="quantity">
-                    <input type="number" value="1" min="1"> 
-                    <h5>Price: Rs 1600 <del>Rs 2000</del></h5>
-                    <button class="btn btn-primary">ADD TO CART</button>
-                </div>
-    
-                
-            </div>
-</div></section>
-
-
+          <div id="shop-app" data-view="product"><p class="sx-loading">Loading…</p></div>
+        </div>
+      </section>
+    </article>
   </main>
-
-
-
-
+</section>
 
   <!-- 
     - #FOOTER
   -->
+
+  <footer class="footer">
+
+    <div class="footer-top">
+      <div class="container">
+
+        <div class="footer-brand-wrapper">
+
+          <a href="./index.html" class="logo">
+            <img src="readme-images/project-logo copywhite.png" alt="EntXHub logo">
+          </a>
+
+          <ul class="footer-list">
+
+            <li>
+              <a href="./index.html" class="footer-link">Home</a>
+            </li>
+
+            <li>
+              <a href="movie.html" class="footer-link">Movie</a>
+            </li>
+
+            <li>
+              <a href="#" class="footer-link">TV Show</a>
+            </li>
+
+            <li>
+              <a href="#" class="footer-link">Web Series</a>
+            </li>
+
+            <li>
+              <a href="#" class="footer-link">Pricing</a>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="quicklink-wrapper">
+
+          <ul class="quicklink-list">
+
+            <li>
+              <a href="#" class="quicklink-link">Faq</a>
+            </li>
+
+            <li>
+              <a href="#" class="quicklink-link">Help center</a>
+            </li>
+
+            <li>
+              <a href="#" class="quicklink-link">Terms of use</a>
+            </li>
+
+            <li>
+              <a href="#" class="quicklink-link">Privacy</a>
+            </li>
+
+          </ul>
+
+          <ul class="social-list">
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-facebook"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-pinterest"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-linkedin"></ion-icon>
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+    </div>
+
+    
+
+
 
 
   <!-- 
@@ -420,10 +300,8 @@ hr {
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
-  
-
-
   <script src="./assets/js/entx.js"></script>
+  <script src="./assets/js/shop.js"></script>
 </body>
 
 </html>

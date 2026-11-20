@@ -1,0 +1,53 @@
+{
+ "multinomial_nb": {
+  "movie_sentences": {
+   "accuracy": 0.7772,
+   "macro_f1": 0.7767,
+   "n": 2132
+  },
+  "product_review_sentences": {
+   "accuracy": 0.7756,
+   "macro_f1": 0.7609,
+   "n": 1043
+  },
+  "full_movie_reviews": {
+   "accuracy": 0.664,
+   "macro_f1": 0.6227,
+   "n": 2000
+  }
+ },
+ "complement_nb": {
+  "movie_sentences": {
+   "accuracy": 0.7735,
+   "macro_f1": 0.7725,
+   "n": 2132
+  },
+  "product_review_sentences": {
+   "accuracy": 0.7766,
+   "macro_f1": 0.7639,
+   "n": 1043
+  },
+  "full_movie_reviews": {
+   "accuracy": 0.6635,
+   "macro_f1": 0.622,
+   "n": 2000
+  }
+ },
+ "logistic_regression": {
+  "movie_sentences": {
+   "accuracy": 0.7739,
+   "macro_f1": 0.7738,
+   "n": 2132
+  },
+  "product_review_sentences": {
+   "accuracy": 0.7756,
+   "macro_f1": 0.7666,
+   "n": 1043
+  },
+  "full_movie_reviews": {
+   "accuracy": 0.732,
+   "macro_f1": 0.7152,
+   "n": 2000
+  }
+ }
+}

@@ -4,10 +4,11 @@ import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { getRepo } from "./_lib/repo.js";
-import { PLANS } from "./_lib/catalog.js";
+import { COUPONS, PLANS, SHIPPING } from "./_lib/catalog.js";
+import * as shop from "./_lib/shop.js";
+import { recommenderInfo, sentimentInfo, sentiment } from "./_lib/ai.js";
 
 const SECRET = () => process.env.JWT_SECRET || "entxhub-dev-secret";
-const DELIVERY = 50;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE = /^\+?[0-9][0-9\s-]{8,14}$/;
 
@@ -99,44 +100,73 @@ const routes = {
     return clean;
   },
 
-  // Checkout: prices come from the catalog; product stock is decremented atomically.
+  // ---------- shop ----------
+  "GET config": async () => ({ stripe: shop.stripeConfigured(), shipping: SHIPPING, coupons: Object.entries(COUPONS).map(([code, c]) => ({ code, label: c.label })) }),
+  "GET products": async (_req, db) => {
+    const [list, stats] = await Promise.all([db.catalogList("product"), db.reviewStats()]);
+    const by = new Map(stats.map((s) => [s._id, s]));
+    return list.map((p) => ({ ...p, rating: by.get(`product:${p.id}`) ? Math.round(by.get(`product:${p.id}`).avg * 10) / 10 : null, reviews: by.get(`product:${p.id}`)?.n ?? 0 }));
+  },
+  "GET product": async (req, db) => {
+    const pid = new URL(req.url, "http://x").searchParams.get("id") || "";
+    const p = await db.catalogGet("product", pid);
+    if (!p) throw new HttpError(404, "Product not found");
+    const [reviews, alsoBought, related] = await Promise.all([shop.reviewsFor(db, `product:${p.id}`), shop.similarItems(db, `product:${p.id}`, "product", 4),
+      p.relatedTitle ? db.catalogGet("title", p.relatedTitle) : null]);
+    return { ...p, ...reviews, alsoBought, relatedTitle: related };
+  },
+  "POST cart/quote": async (req, db) => shop.quote(db, await readBody(req)),
   "POST orders": async (req, db) => {
     const me = auth(req);
-    const { items, name, address, payment } = await readBody(req);
-    if (!Array.isArray(items) || !items.length) throw new HttpError(400, "Your cart is empty");
-    if (!String(name || "").trim() || String(address || "").trim().length < 6) throw new HttpError(400, "Enter your name and full delivery address");
-    const lines = [];
-    for (const i of items) {
-      const qty = Math.max(1, Math.min(20, Number(i.qty) | 0));
-      const product = await db.catalogGet("product", i.id);
-      const event = product ? null : await db.catalogGet("event", i.id);
-      const item = product ?? event;
-      if (!item) throw new HttpError(400, `Unknown item: ${i.id}`);
-      if (event && (await db.seatsSold(event.id)) + qty > event.capacity) throw new HttpError(409, `Not enough seats left for ${event.title}`);
-      lines.push({ id: item.id, kind: item.kind, title: item.title, option: i.option || "", qty, price: item.price, total: item.price * qty, img: item.img });
-    }
-    const taken = [];
-    for (const l of lines.filter((l) => l.kind === "product")) {
-      if (!(await db.takeStock(l.id, l.qty))) {
-        for (const t of taken) await db.returnStock(t.id, t.qty);
-        throw new HttpError(409, `${l.title} is out of stock in that quantity`);
-      }
-      taken.push(l);
-    }
-    const subtotal = lines.reduce((t, l) => t + l.total, 0);
-    const tax = Math.round(subtotal * 0.005);
-    const order = { _id: id("EX"), userId: me.id, email: me.email, name: String(name).trim().slice(0, 80), address: String(address).trim().slice(0, 300),
-      payment: ["Cash on delivery", "Card on delivery"].includes(payment) ? payment : "Cash on delivery",
-      lines, subtotal, delivery: DELIVERY, tax, total: subtotal + DELIVERY + tax, status: "Placed", createdAt: new Date() };
-    await db.insertOrder(order);
-    // Event tickets bought through the cart also count as bookings.
-    for (const l of lines.filter((l) => l.kind === "event")) {
-      await db.insertBooking({ _id: id("BK"), userId: me.id, eventId: l.id, title: l.title, tickets: l.qty, amount: l.total, orderId: order._id, status: "Confirmed", createdAt: new Date() });
-    }
-    await db.setCart(me.id, []);
-    return order;
+    const origin = req.headers.origin || `https://${req.headers["x-forwarded-host"] || req.headers.host}`;
+    return shop.createOrder(db, me, await readBody(req), origin);
   },
-  "GET orders": async (req, db) => db.listOrders(auth(req).id),
+  "GET order": async (req, db) => {
+    const me = auth(req);
+    const o = await shop.refreshOrder(db, await db.getOrder(new URL(req.url, "http://x").searchParams.get("id") || ""));
+    if (!o || o.userId !== me.id) throw new HttpError(404, "Order not found");
+    return shop.withStatus(o);
+  },
+  "POST orders/cancel": async (req, db) => shop.cancelOrder(db, auth(req), (await readBody(req)).id),
+  "GET reviews": async (req, db) => shop.reviewsFor(db, new URL(req.url, "http://x").searchParams.get("target") || ""),
+  "POST reviews": async (req, db) => shop.addReview(db, auth(req), await readBody(req)),
+  "POST ai/sentiment": async (req) => sentiment(String((await readBody(req)).text || "").slice(0, 2000)),
+  "GET ai/models": async () => ({ sentiment: sentimentInfo(), recommender: recommenderInfo() }),
+  "GET wishlist": async (req, db) => {
+    const ids = await db.getWishlist(auth(req).id);
+    return (await Promise.all(ids.map((i) => db.catalogGet("product", i)))).filter(Boolean);
+  },
+  "POST wishlist": async (req, db) => {
+    const me = auth(req);
+    const { id: pid } = await readBody(req);
+    if (!(await db.catalogGet("product", String(pid)))) throw new HttpError(404, "Product not found");
+    const list = await db.getWishlist(me.id);
+    const next = list.includes(pid) ? list.filter((x) => x !== pid) : [...list, String(pid)].slice(-50);
+    await db.setWishlist(me.id, next);
+    return { items: next, saved: next.includes(pid) };
+  },
+  // Personalised picks from the matrix-factorisation model: signed-in users from their history,
+  // guests from the items they viewed in this browser (?seed=title:x,product:y).
+  "GET recommendations": async (req, db) => {
+    const url = new URL(req.url, "http://x");
+    const kind = ["title", "product"].includes(url.searchParams.get("kind")) ? url.searchParams.get("kind") : undefined;
+    let history = [];
+    const h = req.headers.authorization || "";
+    if (h.startsWith("Bearer ")) { try { history = await shop.userHistory(db, auth(req).id); } catch { history = []; } }
+    for (const k of (url.searchParams.get("seed") || "").split(",").filter(Boolean).slice(0, 20)) if (!history.some(([x]) => x === k)) history.push([k, 1]);
+    const items = await shop.recommendations(db, history, kind, Math.min(12, Number(url.searchParams.get("n")) || 8));
+    return { personalised: history.length > 0, basedOn: history.length, items };
+  },
+  "GET similar": async (req, db) => {
+    const url = new URL(req.url, "http://x");
+    const kind = ["title", "product"].includes(url.searchParams.get("kind")) ? url.searchParams.get("kind") : undefined;
+    return shop.similarItems(db, url.searchParams.get("key") || "", kind, Math.min(12, Number(url.searchParams.get("n")) || 6));
+  },
+  "GET orders": async (req, db) => {
+    const me = auth(req);
+    const list = await db.listOrders(me.id);
+    return Promise.all(list.map(async (o) => shop.withStatus(await shop.refreshOrder(db, o))));
+  },
 
   "POST bookings": async (req, db) => {
     const me = auth(req);

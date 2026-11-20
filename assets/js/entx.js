@@ -511,7 +511,39 @@
   }
   function recordHistory() {
     const m = findTitle(params.get('id')) || findTitle('peaky-blinders');
-    if (auth.current() && m) api('history', { body: { id: m.id } }).catch(() => {});
+    if (!m) return;
+    const v = store.get('viewed', []).filter((k) => k !== 'title:' + m.id); v.unshift('title:' + m.id); store.set('viewed', v.slice(0, 15));
+    if (auth.current()) api('history', { body: { id: m.id } }).catch(() => {});
+  }
+  // AI extras on a title page: more like this, merch from the same world, and reviews with sentiment
+  function titleExtras() {
+    const m = findTitle(params.get('id')) || findTitle('peaky-blinders');
+    const host = document.querySelector('.movie-detail');
+    if (!m || !host || !window.EntX.recSection) return;
+    const box = document.createElement('section');
+    box.className = 'container entx-extras'; box.id = 'shop-extras';
+    box.innerHTML = '<div id="x-more"></div><div id="x-merch"></div><div id="reviews" class="sx-section"></div>';
+    host.insertAdjacentElement('afterend', box);
+    window.EntX.recSection(box.querySelector('#x-more'), 'More like ' + m.title, `similar?key=title:${m.id}&kind=title&n=8`, 'Titles closest to this one in our recommender\'s learned taste space.');
+    window.EntX.recSection(box.querySelector('#x-merch'), 'Shop the look', `similar?key=title:${m.id}&kind=product&n=4`, 'Merch that fans of this title buy.');
+    window.EntX.renderReviews(box.querySelector('#reviews'), 'title:' + m.id);
+  }
+  // "Recommended for you" row at the top of the Watch page
+  function watchRecommendations() {
+    const anchor = document.querySelector('.titleeee') || document.querySelector('.upcoming');
+    if (!anchor) return;
+    const seed = store.get('viewed', []).join(',');
+    const box = document.createElement('section');
+    box.className = 'container entx-extras';
+    anchor.insertAdjacentElement('beforebegin', box);
+    const draw = (items, personalised) => {
+      if (!items.length) return;
+      box.innerHTML = `<div class="sx-section" style="margin:10px 0 30px"><h2 style="color:#fff;font-size:24px;font-weight:800">${personalised ? 'Recommended for you' : 'Popular right now'} <span class="sx-ai">AI</span></h2>
+        <p style="color:#9a9aa6;margin:0 0 12px">${personalised ? 'Picked by a matrix-factorisation model from what you have watched' : 'Watch a few trailers and this row becomes personal'}.</p>
+        <div class="sx-strip">${items.map((t) => `<a class="sx-mini" href="movie-details.html?id=${esc(t.id)}"><img src="${esc(t.img)}" alt="" loading="lazy"><div>${esc(t.title)}<small>${esc(t.type)}</small></div></a>`).join('')}</div></div>`;
+    };
+    api(`recommendations?kind=title&n=10&seed=${encodeURIComponent(seed || 'title:oppenheimer,title:interstellar,title:squid-game')}`)
+      .then((r) => draw(r.items, !!seed || auth.current())).catch(() => {});
   }
   function enhancePlayer() {
     const m = findTitle(params.get('id')) || findTitle('peaky-blinders');
@@ -647,7 +679,7 @@
     const user = auth.current();
     if (!user) { location.href = 'loginmain.html'; return; }
     const close = modal(`<h3>My account</h3><p>${esc(user.name)} · ${esc(user.email)}</p><div id="entx-acc-body"><p>Loading…</p></div>
-      <button class="entx-btn" id="entx-logout">Log out</button>`, (m) => {
+      <a class="entx-btn" href="orders.html">My orders</a> <a class="entx-btn ghost" href="wishlist.html">Wishlist</a> <button class="entx-btn ghost" id="entx-logout">Log out</button>`, (m) => {
       m.querySelector('#entx-logout').onclick = () => { rememberPage(); auth.logOut(); toast('You have been logged out.'); setTimeout(() => location.reload(), 600); };
     });
     try {
@@ -665,6 +697,9 @@
     } catch (err) { const body = document.getElementById('entx-acc-body'); if (body) body.innerHTML = '<p>' + esc(err.message) + '</p>'; }
   }
 
+  // shared with assets/js/shop.js
+  window.EntX = { api, auth, cart, store, toast, modal, esc, rs, slug, openAccount, updateBadges, trailerModal, MOVIES, findTitle: (id) => MOVIES.find((x) => x.id === id) };
+
   // ---------- init ----------
   document.addEventListener('DOMContentLoaded', () => {
     rememberPage();
@@ -676,13 +711,12 @@
     cart.load();
     if (page === 'loginmain.html') wireAuthForm('login');
     if (page === 'signup.html') wireAuthForm('signup');
-    if (page === 'shop.html') enhanceShop();
-    if (page === 'product-info.html') enhanceProductPage();
-    if (page === 'cart.html') renderCartPage();
+    // shop, product, cart, checkout and order pages are rendered by assets/js/shop.js
     if (page === 'events.html') { enhanceEvents(); const t = location.hash && document.getElementById(location.hash.slice(1)); if (t) setTimeout(() => t.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200); }
     if (page === 'games.html') enhanceGames();
     if (page === 'movie.html' || page === 'showmore.html') enhanceMovieCards();
-    if (page === 'movie-details.html') { enhanceMovieDetails(); recordHistory(); }
+    if (page === 'movie-details.html') { enhanceMovieDetails(); recordHistory(); titleExtras(); }
+    if (page === 'movie.html') watchRecommendations();
     if (page === 'player.html') enhancePlayer();
     if (page === 'info.html') wireContactForm();
   });
