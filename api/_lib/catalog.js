@@ -25,7 +25,12 @@ export const TITLES = [
   ["Lucifer", "Web Series", "assets/images/ws1.png", "Crime, Drama, Fantasy"], ["Dark", "Web Series", "assets/images/ws2.png", "Mystery, Science Fiction, Thriller"],
   ["Money Heist", "Web Series", "assets/images/ws5.png", "Action, Crime, Thriller"], ["Peaky Blinders", "Web Series", "assets/images/ws4.png", "Crime, Drama"],
   ["Loki", "Web Series", "assets/images/ws3.png", "Action, Adventure, Fantasy"], ["Squid Game", "Web Series", "assets/images/ws6.png", "Drama, Survival, Thriller"],
-  ["Stranger Things", "Web Series", "assets/images/ws7.png", "Drama, Horror, Science Fiction"], ["Tauha Ibne Jalil", "Podcast", "assets/images/p1.png", "Talk, Lifestyle"],
+  ["Stranger Things", "Web Series", "assets/images/ws7.png", "Drama, Horror, Science Fiction"], ["Vikings Valhalla", "Web Series", "assets/images/slide14.png", "Action, Adventure, Drama"],
+  ["Barbie", "Movie", "assets/images/slide11.png", "Comedy, Adventure, Fantasy"], ["Death on the Nile", "Movie", "assets/images/slide12.png", "Crime, Mystery, Thriller"],
+  ["Joker", "Movie", "assets/images/slide19.png", "Crime, Drama, Thriller"], ["Black Panther", "Movie", "assets/images/slide18.png", "Action, Adventure, Science Fiction"],
+  ["Doctor Strange in the Multiverse of Madness", "Movie", "assets/images/upcoming-2.png", "Action, Fantasy, Horror"], ["The Northman", "Movie", "assets/images/upcoming-1.png", "Action, Adventure, Drama"],
+  ["Memory", "Movie", "assets/images/upcoming-3.png", "Action, Crime, Thriller"], ["The Unbearable Weight of Massive Talent", "Movie", "assets/images/upcoming-4.png", "Action, Comedy"],
+  ["Andrew Tate", "Podcast", "assets/images/p5.png", "Talk, Interview"], ["Tauha Ibne Jalil", "Podcast", "assets/images/p1.png", "Talk, Lifestyle"],
   ["Gold Minds", "Podcast", "assets/images/p4.png", "Talk, Business"], ["Junaid Akram", "Podcast", "assets/images/p2.png", "Talk, Comedy"],
   ["Muzammil Hassan", "Podcast", "assets/images/p3.png", "Talk, Education"],
 ].map(([title, type, img, genres]) => ({ _id: `title:${slug(title)}`, kind: "title", id: slug(title), title, type, img, genres: genres.split(", ") }));

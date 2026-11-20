@@ -52,7 +52,16 @@
   .entx-qty{display:inline-flex;align-items:center;gap:8px}.entx-qty button{width:28px;height:28px;border-radius:6px;border:1px solid #999;background:transparent;cursor:pointer;font-weight:700}
   .entx-empty{padding:30px 10px;text-align:center;color:#777}
   .circle.entx-on{outline:3px solid #fff;outline-offset:2px}
-  .entx-hidden{display:none!important}`;
+  .entx-hidden{display:none!important}
+  .entx-modal.entx-video{max-width:880px;padding:18px}
+  .entx-frame{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:10px;overflow:hidden;margin-top:10px}
+  .entx-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .entx-carcap{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 12px;padding:8px 16px;border-radius:12px;background:rgba(10,10,18,.82);border:1px solid #2c2c3d;color:#ddd;z-index:20;width:max-content;max-width:94vw;text-align:center}
+  .entx-carcap b{color:#fff;font-size:17px}.entx-carcap span{color:#aaa;font-size:13px}.entx-carcap .entx-btn{margin:0;padding:6px 14px;font-size:14px}
+  .entx-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.entx-actions .entx-btn{margin:0}
+  .entx-back{display:inline-block;color:#fff;text-decoration:none;font-weight:600;margin-bottom:12px}
+  .entx-ptitle{color:#fff;font-size:28px;margin:16px 0 4px}.entx-pmeta{color:#ccc;margin:4px 0}.entx-pmeta a{color:hsl(17,68%,58%)}
+  a.entx-imglink{display:contents}.section-title h1 a{color:inherit;text-decoration:none}.section-title h1 a:hover{color:hsl(17,68%,58%)}`;
   document.head.appendChild(css);
 
   function toast(msg) {
@@ -75,22 +84,48 @@
   }
 
   // ---------- catalog (used by search, product and movie pages) ----------
+  // [title, type, poster, genres, year, YouTube trailer id, storyline]
   const MOVIES = [
-    ['The Dark Knight Rises', 'Movie', 'assets/images/m1.png', 'Action, Crime, Drama'], ['Maula Jatt', 'Movie', 'assets/images/m5.png', 'Action, Drama'],
-    ['Inception', 'Movie', 'assets/images/m2.png', 'Action, Science Fiction, Thriller'], ['Interstellar', 'Movie', 'assets/images/m3.png', 'Adventure, Drama, Science Fiction'],
-    ['Jurassic World', 'Movie', 'assets/images/m4.png', 'Action, Adventure, Science Fiction'], ['Oppenheimer', 'Movie', 'assets/images/moooovie1.jpg', 'Biography, Drama, History'],
-    ['Avengers Infinity War', 'Movie', 'assets/images/m6.png', 'Action, Adventure, Science Fiction'],
-    ['Tokyo Ghoul', 'Anime', 'assets/images/tokyo ghoul.png', 'Action, Dark Fantasy, Horror'], ['Death Note', 'Anime', 'assets/images/death note.png', 'Mystery, Psychological Thriller'],
-    ['Attack On Titan', 'Anime', 'assets/images/attack on titians.png', 'Action, Dark Fantasy'], ['Dragon Ball Z', 'Anime', 'assets/images/dragon ball z.png', 'Action, Adventure, Martial Arts'],
-    ['One Piece', 'Anime', 'assets/images/one piece.png', 'Action, Adventure, Comedy'], ['Pokemon', 'Anime', 'assets/images/pokemon.png', 'Adventure, Family'],
-    ['Naruto', 'Anime', 'assets/images/aruto.png', 'Action, Adventure, Martial Arts'],
-    ['Lucifer', 'Web Series', 'assets/images/ws1.png', 'Crime, Drama, Fantasy'], ['Dark', 'Web Series', 'assets/images/ws2.png', 'Mystery, Science Fiction, Thriller'],
-    ['Money Heist', 'Web Series', 'assets/images/ws5.png', 'Action, Crime, Thriller'], ['Peaky Blinders', 'Web Series', 'assets/images/ws4.png', 'Crime, Drama'],
-    ['Loki', 'Web Series', 'assets/images/ws3.png', 'Action, Adventure, Fantasy'], ['Squid Game', 'Web Series', 'assets/images/ws6.png', 'Drama, Survival, Thriller'],
-    ['Stranger Things', 'Web Series', 'assets/images/ws7.png', 'Drama, Horror, Science Fiction'],
-    ['Tauha Ibne Jalil', 'Podcast', 'assets/images/p1.png', 'Talk, Lifestyle'], ['Gold Minds', 'Podcast', 'assets/images/p4.png', 'Talk, Business'],
-    ['Junaid Akram', 'Podcast', 'assets/images/p2.png', 'Talk, Comedy'], ['Muzammil Hassan', 'Podcast', 'assets/images/p3.png', 'Talk, Education'],
-  ].map(([title, type, img, genres]) => ({ id: slug(title), title, type, img, genres }));
+    ['The Dark Knight Rises', 'Movie', 'assets/images/m1.png', 'Action, Crime, Drama', 2012, 'g8evyE9TuYk', 'Eight years after taking the blame for Harvey Dent, Bruce Wayne is pulled out of hiding when the masked revolutionary Bane takes Gotham hostage.'],
+    ['Maula Jatt', 'Movie', 'assets/images/m5.png', 'Action, Drama', 2022, 'pEWqOAcYgpQ', 'The Legend of Maula Jatt: a fearless Punjabi hero faces the brutal Noori Natt and his clan in an epic feud of honour and revenge.'],
+    ['Inception', 'Movie', 'assets/images/m2.png', 'Action, Science Fiction, Thriller', 2010, 'Qwe6qXFTdgc', 'A thief who steals secrets from inside dreams is offered one last job: plant an idea in a target\'s mind instead of taking one.'],
+    ['Interstellar', 'Movie', 'assets/images/m3.png', 'Adventure, Drama, Science Fiction', 2014, 'zSWdZVtXT7E', 'With Earth running out of food, a former pilot leads a team through a wormhole to find humanity a new home among the stars.'],
+    ['Jurassic World', 'Movie', 'assets/images/m4.png', 'Action, Adventure, Science Fiction', 2015, 'RFinNxS5KN4', 'A fully working dinosaur park on Isla Nublar faces disaster when a genetically engineered hybrid escapes its enclosure.'],
+    ['Oppenheimer', 'Movie', 'assets/images/moooovie1.jpg', 'Biography, Drama, History', 2023, 'bK6ldnjE3Y0', 'The story of J. Robert Oppenheimer, the physicist who led the Manhattan Project, and the cost of building the atomic bomb.'],
+    ['Avengers Infinity War', 'Movie', 'assets/images/m6.png', 'Action, Adventure, Science Fiction', 2018, '6ZfuNTqbHE8', 'The Avengers and their allies unite to stop Thanos from collecting all six Infinity Stones and wiping out half of all life.'],
+    ['Barbie', 'Movie', 'assets/images/slide11.png', 'Comedy, Adventure, Fantasy', 2023, 'pBk4NYhWNMM', 'Barbie and Ken leave the perfect world of Barbieland and discover the joys and perils of living in the real world.'],
+    ['Death on the Nile', 'Movie', 'assets/images/slide12.png', 'Crime, Mystery, Thriller', 2022, 'dZRqB0JLizw', 'Detective Hercule Poirot\'s holiday on a luxury Nile steamer turns into a murder hunt when a newlywed heiress is killed on board.'],
+    ['Joker', 'Movie', 'assets/images/slide19.png', 'Crime, Drama, Thriller', 2019, 'zAGVQLHvwOY', 'Failed comedian Arthur Fleck, ignored by a crumbling Gotham, slides into madness and becomes the Joker.'],
+    ['Black Panther', 'Movie', 'assets/images/slide18.png', 'Action, Adventure, Science Fiction', 2018, 'xjDjIWPwcPU', 'T\'Challa returns home to rule the hidden nation of Wakanda, but a powerful challenger threatens his throne and the world.'],
+    ['Doctor Strange in the Multiverse of Madness', 'Movie', 'assets/images/upcoming-2.png', 'Action, Fantasy, Horror', 2022, 'aWzlQ2N6qqg', 'Doctor Strange opens the door to the multiverse and must face alternate versions of himself and a terrifying new threat.'],
+    ['The Northman', 'Movie', 'assets/images/upcoming-1.png', 'Action, Adventure, Drama', 2022, 'oMSdFM12hOw', 'A young Viking prince sets out to avenge his murdered father, rescue his mother and kill his treacherous uncle.'],
+    ['Memory', 'Movie', 'assets/images/upcoming-3.png', 'Action, Crime, Thriller', 2022, '77Dqqomrvxo', 'An expert assassin losing his memory refuses one last job and becomes the target of the people who hired him.'],
+    ['The Unbearable Weight of Massive Talent', 'Movie', 'assets/images/upcoming-4.png', 'Action, Comedy', 2022, 'CKTRbKch2K4', 'Nicolas Cage plays himself, a broke actor hired to attend a superfan\'s birthday who gets dragged into a real CIA operation.'],
+    ['Tokyo Ghoul', 'Anime', 'assets/images/tokyo ghoul.png', 'Action, Dark Fantasy, Horror', 2014, 'vGuQeQsoRgU', 'College student Ken Kaneki becomes half-ghoul after a deadly encounter and must survive in a hidden world of flesh-eating ghouls.'],
+    ['Death Note', 'Anime', 'assets/images/death note.png', 'Mystery, Psychological Thriller', 2006, 'NlJZ-YgAt-c', 'A brilliant student finds a notebook that kills anyone whose name is written in it, and a genius detective sets out to catch him.'],
+    ['Attack On Titan', 'Anime', 'assets/images/attack on titians.png', 'Action, Dark Fantasy', 2013, 'LV-nazLVmgo', 'Humanity lives behind giant walls to hide from man-eating Titans, until the day the walls are broken and Eren Yeager vows revenge.'],
+    ['Dragon Ball Z', 'Anime', 'assets/images/dragon ball z.png', 'Action, Adventure, Martial Arts', 1989, 'Bh481ps0sGE', 'Goku and his friends defend Earth from ever stronger enemies, from Saiyan warriors to the tyrant Frieza.'],
+    ['One Piece', 'Anime', 'assets/images/one piece.png', 'Action, Adventure, Comedy', 1999, '1KMcoJBMWE4', 'Monkey D. Luffy and his Straw Hat crew sail the Grand Line in search of the legendary treasure, the One Piece.'],
+    ['Pokemon', 'Anime', 'assets/images/pokemon.png', 'Adventure, Family', 2023, '_c_hMehCORQ', 'Pokémon Horizons follows Liko and Roy as they travel the world with their Pokémon and uncover the mysteries of their pendants.'],
+    ['Naruto', 'Anime', 'assets/images/aruto.png', 'Action, Adventure, Martial Arts', 2007, '22R0j8UKRzY', 'Naruto Uzumaki returns to the Hidden Leaf stronger than ever to protect his friends and bring Sasuke home.'],
+    ['Lucifer', 'Web Series', 'assets/images/ws1.png', 'Crime, Drama, Fantasy', 2016, 'X4bF_quwNtw', 'Bored of ruling Hell, Lucifer Morningstar opens a nightclub in Los Angeles and starts helping the LAPD solve crimes.'],
+    ['Dark', 'Web Series', 'assets/images/ws2.png', 'Mystery, Science Fiction, Thriller', 2017, 'ESEUoa-mz2c', 'The disappearance of two children in a small German town exposes a time-travel conspiracy that spans four families and three generations.'],
+    ['Money Heist', 'Web Series', 'assets/images/ws5.png', 'Action, Crime, Thriller', 2021, 'sOK-lHOIJZ8', 'The Professor and his team in red jumpsuits pull off the most ambitious robberies in Spain, against the police and against time.'],
+    ['Peaky Blinders', 'Web Series', 'assets/images/ws4.png', 'Crime, Drama', 2022, '2nsT9uQPIrk', 'A British crime drama set in post-war Birmingham, following Thomas Shelby and his family as they build an empire through crime and politics.'],
+    ['Loki', 'Web Series', 'assets/images/ws3.png', 'Action, Adventure, Fantasy', 2021, 'nW948Va-l10', 'After stealing the Tesseract, Loki is arrested by the Time Variance Authority and forced to help fix the timeline he broke.'],
+    ['Squid Game', 'Web Series', 'assets/images/ws6.png', 'Drama, Survival, Thriller', 2021, 'oqxAJKy0ii4', 'Hundreds of people in debt accept an invitation to play children\'s games for a huge cash prize, where losing means death.'],
+    ['Stranger Things', 'Web Series', 'assets/images/ws7.png', 'Drama, Horror, Science Fiction', 2022, 'a3thyAnShck', 'In season 4, the friends from Hawkins are split apart as a new evil from the Upside Down, Vecna, begins to hunt the town.'],
+    ['Vikings Valhalla', 'Web Series', 'assets/images/slide14.png', 'Action, Adventure, Drama', 2022, 'Yi4YnwFT7Gk', 'A hundred years after Vikings, Leif Eriksson, Freydís and Harald Sigurdsson fight for power as Viking rule clashes with Christian England.'],
+    ['Tauha Ibne Jalil', 'Podcast', 'assets/images/p1.png', 'Talk, Lifestyle', 2023, 'P5AFbrsFXi0', 'Story of Change: Tuaha Ibn Jalil talks about faith, failure and finding purpose.'],
+    ['Gold Minds', 'Podcast', 'assets/images/p4.png', 'Talk, Business', 2023, '9Kejiecz2R0', 'Gold Minds with Kevin Hart: candid conversations with artists and entrepreneurs about the journeys behind their success.'],
+    ['Andrew Tate', 'Podcast', 'assets/images/p5.png', 'Talk, Interview', 2022, 'iv-C4CVGk28', 'A long-form interview with Patrick Bet-David on the PBD Podcast.'],
+    ['Junaid Akram', 'Podcast', 'assets/images/p2.png', 'Talk, Comedy', 2023, 'g-4Y0tqlKUA', 'Junaid Akram\'s Podcast: comedy, life advice and honest chats with guests from across Pakistan.'],
+    ['Muzammil Hassan', 'Podcast', 'assets/images/p3.png', 'Talk, Education', 2024, 'e5tsbtQxqPc', 'The TBT Podcast with Muzamil Hasan: history, business and big ideas explained with guests.'],
+  ].map(([title, type, img, genres, year, trailer, story]) => ({ id: slug(title), title, type, img, genres, year, trailer, story }));
+  // posters used by the movie.html carousel and the home page → title ids
+  const POSTERS = { 'slide11.png': 'barbie', 'slide12.png': 'death-on-the-nile', 'slide13.png': 'money-heist', 'slide14.png': 'vikings-valhalla',
+    'slide15.png': 'doctor-strange-in-the-multiverse-of-madness', 'slide17.png': 'stranger-things', 'slide18.png': 'black-panther', 'slide19.png': 'joker',
+    'upcoming-1.png': 'the-northman', 'upcoming-2.png': 'doctor-strange-in-the-multiverse-of-madness', 'upcoming-3.png': 'memory', 'upcoming-4.png': 'the-unbearable-weight-of-massive-talent' };
 
   const PRODUCTS = [
     ['barbie-tshirt', 'Barbie T-Shirt', 1600, 'assets/images/shop1.jpg'], ['barbie-croptop', 'Barbie CropTop', 1900, 'assets/images/shop2.jpg'],
@@ -99,18 +134,36 @@
     ['simba-tshirt', 'Simba T-Shirt', 1500, 'assets/images/shop7.jpg'], ['barbie-tshirt-classic', 'Barbie T-Shirt (Classic)', 1200, 'assets/images/shop1.jpg'],
   ].map(([id, title, price, img]) => ({ id, title, price, img, type: 'Clothing' }));
 
+  // game artwork file → [name, genre, YouTube trailer id, where to play / official page]
   const GAMES = {
-    'abd47e100099495.60427765e8914.jpg': ['Red Dead Redemption 2', 'Open-world western adventure'], 'asphalt 8.jpg': ['Asphalt 8', 'Arcade racing'],
-    'fortnite-1920x1080-hd-cvavgntkwzkn72rg.jpg': ['Fortnite', 'Battle royale'], 'marvels-spider-man-2560x1440-12229.jpeg': ["Marvel's Spider-Man", 'Superhero action'],
-    'gta 5.jpg': ['GTA V', 'Open-world crime'], 'minion-rush-5120x2880-12236.jpg': ['Minion Rush', 'Endless runner'],
-    'gta vice city.jpg': ['GTA Vice City', 'Open-world crime classic'], 'sonic-generations-hd-398arg8tmhi6x186.jpg': ['Sonic Generations', 'Platformer'],
-    'cod black ops 3.jpg': ['Call of Duty: Black Ops III', 'First-person shooter'], 'batman.jpg': ['Batman: Arkham Knight', 'Action adventure'],
-    'gta 4.jpg': ['GTA IV', 'Open-world crime'], 'nfs underrcover.jpg': ['Need for Speed: Undercover', 'Street racing'],
-    'residen evil.jpeg': ['Resident Evil', 'Survival horror'], 'desktop-wallpaper-need-for-speed-underground-3-nfs-underground-2.jpg': ['Need for Speed: Underground 2', 'Street racing'],
-    'babrie.jpeg': ['Barbie Dreamhouse Adventures', 'Family simulation'], 'san andreas.jpg': ['GTA San Andreas', 'Open-world crime classic'],
-    'Need-For-Speed-series-1024x562.jpeg': ['Need for Speed', 'Racing series'], 'HD-wallpaper-kay-o-x-jett-valorant-game-poster.jpg': ['Valorant', 'Tactical shooter'],
-    'subway surfer.jpg': ['Subway Surfers', 'Endless runner'], 'shadow fight arena.jpg': ['Shadow Fight Arena', 'Fighting'],
-    'ludo.webp': ['Ludo King', 'Board game'], 'mars.webp': ['Mars: Mars', 'Arcade flyer'], 'ummi.png': ['Ummi', 'Casual game'], 'coc.webp': ['Clash of Clans', 'Strategy'],
+    'abd47e100099495.60427765e8914.jpg': ['Red Dead Redemption 2', 'Open-world western adventure', 'gmA6MrX81z4', 'https://www.rockstargames.com/reddeadredemption2'],
+    'asphalt 8.jpg': ['Asphalt 8', 'Arcade racing', 'jpSGZsgga_I', 'https://www.gameloft.com/game/asphalt-8'],
+    'fortnite-1920x1080-hd-cvavgntkwzkn72rg.jpg': ['Fortnite', 'Battle royale', 'qpKtzf5fXn4', 'https://www.fortnite.com/'],
+    'marvels-spider-man-2560x1440-12229.jpeg': ["Marvel's Spider-Man", 'Superhero action', 'q4GdJVvdxss', 'https://www.playstation.com/en-us/games/marvels-spider-man-remastered/'],
+    'gta 5.jpg': ['GTA V', 'Open-world crime', 'hvoD7ehZPcM', 'https://www.rockstargames.com/gta-v'],
+    'minion-rush-5120x2880-12236.jpg': ['Minion Rush', 'Endless runner', 'E4HclOqb4D4', 'https://www.gameloft.com/game/minion-rush'],
+    'gta vice city.jpg': ['GTA Vice City', 'Open-world crime classic', 'm8oQllwqw_I', 'https://www.rockstargames.com/games/vicecity'],
+    'sonic-generations-hd-398arg8tmhi6x186.jpg': ['Sonic Generations', 'Platformer', 'O9N8D1LTdug', 'https://www.sonicthehedgehog.com/'],
+    'cod black ops 3.jpg': ['Call of Duty: Black Ops III', 'First-person shooter', 'qAUYNIDEJ6o', 'https://www.callofduty.com/'],
+    'batman.jpg': ['Batman: Arkham Knight', 'Action adventure', 'JeGAQXY2FzI', 'https://store.steampowered.com/app/208650/'],
+    'gta 4.jpg': ['GTA IV', 'Open-world crime', 'M80K51DosFo', 'https://www.rockstargames.com/IV'],
+    'nfs underrcover.jpg': ['Need for Speed: Undercover', 'Street racing', 'mkHJzHIbQQg', 'https://www.ea.com/games/need-for-speed'],
+    'residen evil.jpeg': ['Resident Evil 4', 'Survival horror', 'Id2EaldBaWw', 'https://www.residentevil.com/re4/'],
+    'desktop-wallpaper-need-for-speed-underground-3-nfs-underground-2.jpg': ['Need for Speed: Underground 2', 'Street racing', 'xYVIrJBJOhE', 'https://www.ea.com/games/need-for-speed'],
+    'babrie.jpeg': ['Barbie Dreamhouse Adventures', 'Family simulation', 'unzg4mn12zA', 'https://www.budgestudios.com/en/'],
+    'san andreas.jpg': ['GTA San Andreas', 'Open-world crime classic', 'daw8xhaGj2s', 'https://www.rockstargames.com/sanandreas'],
+    'Need-For-Speed-series-1024x562.jpeg': ['Need for Speed Unbound', 'Racing', 'H2Y8XCe7F9E', 'https://www.ea.com/games/need-for-speed/need-for-speed-unbound'],
+    'HD-wallpaper-kay-o-x-jett-valorant-game-poster.jpg': ['Valorant', 'Tactical shooter', 'AnGdzz-XWcE', 'https://playvalorant.com/'],
+    'subway surfer.jpg': ['Subway Surfers', 'Endless runner', 'fGy-x3H-nxU', 'https://poki.com/en/g/subway-surfers'],
+    'shadow fight arena.jpg': ['Shadow Fight Arena', 'Fighting', 'Ej_PukZhbTs', 'https://shadowfight.com/'],
+    'ludo.webp': ['Ludo King', 'Board game', 'KDvdoBJiu20', 'https://ludoking.com/'],
+    'mars.webp': ['Mars: Mars', 'Arcade flyer', 'gImaYwpEc2I', 'https://pomelogames.com/'],
+    'ummi.png': ['Ummi', 'Casual game', '', 'https://www.google.com/search?q=Ummi+game'],
+    'coc.webp': ['Clash of Clans', 'Strategy', 'XH3Xu1-cvII', 'https://supercell.com/en/games/clashofclans/'],
+    'game1.jpeg': ['PUBG Mobile', 'Battle royale', 'uCd6tbUAy6o', 'https://www.pubgmobile.com/'],
+    'game2.jpeg': ['Daria: A Kingdom Simulator', 'Strategy', '', 'https://www.google.com/search?q=Daria+A+Kingdom+Simulator'],
+    'game3.jpeg': ['Bloodborne', 'Action RPG', 'G203e1HhixY', 'https://www.playstation.com/en-us/games/bloodborne/'],
+    'game4.jpeg': ['God of War II', 'Action adventure', 'oe0OmX9hINA', 'https://www.playstation.com/en-us/god-of-war/'],
   };
 
   const EVENTS = [
@@ -160,7 +213,7 @@
           } else {
             await auth.logIn(email, pass); toast('Welcome back!');
           }
-          setTimeout(() => { location.href = params.get('next') || 'index.html'; }, 900);
+          setTimeout(() => { location.href = resumeTarget((auth.current() || {}).email); }, 900);
         } catch (err) { toast(err.message); const submit = form.querySelector('button, [type=submit]'); if (submit) submit.disabled = false; }
       })();
     });
@@ -168,7 +221,7 @@
       el.style.cursor = 'pointer';
       el.addEventListener('click', async () => {
         const provider = el.classList.contains('go') ? 'Google' : 'Facebook';
-        try { await auth.demo(provider); toast('Signed in with a ' + provider + ' demo account.'); setTimeout(() => { location.href = params.get('next') || 'index.html'; }, 900); }
+        try { await auth.demo(provider); toast('Signed in with a ' + provider + ' demo account.'); setTimeout(() => { location.href = resumeTarget((auth.current() || {}).email); }, 900); }
         catch (err) { toast(err.message); }
       });
     });
@@ -337,6 +390,7 @@
     [...document.querySelectorAll('button')].filter((b) => /book now/i.test(b.textContent)).forEach((btn, i) => {
       const ev = EVENTS[i] || { id: 'event-' + i, title: 'Event', price: 1000, img: 'concert.jpg' };
       const block = btn.closest('[class^="container"]');
+      if (block && !block.id) block.id = ev.id;
       const priceEl = block && [...block.querySelectorAll('p')].find((p) => /Price/i.test(p.textContent));
       if (priceEl) { const n = parseInt(priceEl.textContent.replace(/\D/g, ''), 10); if (n) ev.price = n; }
       const h = block && block.querySelector('h2'); if (h) ev.title = h.textContent.trim();
@@ -363,24 +417,42 @@
     });
   }
 
+  // ---------- trailers (YouTube privacy-enhanced embed) ----------
+  const embed = (id) => `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+  const ytWatch = (id) => 'https://www.youtube.com/watch?v=' + encodeURIComponent(id);
+  const gameImg = (file) => (/^game\d\.jpeg$/.test(file) ? 'assets/images/' : 'game pictures/') + file;
+  function trailerModal(title, id, extraHtml) {
+    const bg = document.createElement('div');
+    bg.className = 'entx-modal-bg';
+    bg.innerHTML = `<div class="entx-modal entx-video"><button class="entx-close" aria-label="Close">&times;</button><h3>${esc(title)}</h3>
+      <div class="entx-frame"><iframe src="${embed(id)}" title="${esc(title)} trailer" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>${extraHtml || ''}</div>`;
+    const close = () => bg.remove();
+    bg.addEventListener('click', (e) => { if (e.target === bg || e.target.classList.contains('entx-close')) close(); });
+    document.addEventListener('keydown', function onKey(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onKey); } });
+    document.body.appendChild(bg);
+  }
+
   // ---------- games ----------
+  function openGame(file) {
+    const [name, genre, trailer, site] = GAMES[file] || ['Game', 'Game', '', ''];
+    const links = `<p>${esc(genre)}</p><a class="entx-btn" target="_blank" rel="noopener" href="${esc(site)}">Play / official page</a>`;
+    if (trailer) trailerModal(name, trailer, links);
+    else modal(`<img src="${esc(gameImg(file))}" alt=""><h3>${esc(name)}</h3>${links}`);
+  }
   function enhanceGames() {
-    document.querySelectorAll('.image a[href="#"], .image-row a[href="#"]').forEach((a) => {
+    document.querySelectorAll('.image a, .image-row a').forEach((a) => {
       const img = a.querySelector('img'); if (!img) return;
       const file = decodeURIComponent(img.getAttribute('src').split('/').pop());
-      const [name, genre] = GAMES[file] || [img.alt || 'Game', 'Game'];
-      a.setAttribute('href', 'https://www.google.com/search?q=' + encodeURIComponent(name + ' game'));
-      a.title = name;
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        modal(`<img src="${esc(img.getAttribute('src'))}" alt=""><h3>${esc(name)}</h3><p>${esc(genre)}</p>
-          <a class="entx-btn" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(name + ' official trailer')}">Watch trailer</a>
-          <a class="entx-btn ghost" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(name + ' game')}">Game info</a>`);
-      });
+      if (!GAMES[file]) return;
+      a.setAttribute('href', 'games.html?game=' + encodeURIComponent(file));
+      a.title = GAMES[file][0] + ' · watch trailer';
+      a.addEventListener('click', (e) => { e.preventDefault(); openGame(file); });
     });
+    const g = params.get('game'); if (g && GAMES[g]) openGame(g);
   }
 
   // ---------- movies ----------
+  const findTitle = (id) => MOVIES.find((x) => x.id === id);
   function enhanceMovieCards() {
     document.querySelectorAll('.movie-card').forEach((card) => {
       const t = card.querySelector('.card-title'); const a = card.querySelector('a');
@@ -388,33 +460,111 @@
       const m = MOVIES.find((x) => x.title.toLowerCase() === t.textContent.trim().toLowerCase());
       if (m) card.querySelectorAll('a').forEach((link) => { if (/movie-details/.test(link.getAttribute('href') || '')) link.setAttribute('href', 'movie-details.html?id=' + m.id); });
     });
+    // big poster carousel: clicking the poster in the middle opens it; a caption under it offers trailer + details
+    const car = document.getElementById('carousel');
+    if (!car) return;
+    const idOf = (item) => { const img = item && item.querySelector('img'); return img ? POSTERS[img.getAttribute('src').split('/').pop()] || 'podcasts' : null; };
+    const cap = document.createElement('div');
+    cap.className = 'entx-carcap';
+    const draw = () => {
+      const sel = car.querySelector('.selected'); const id = idOf(sel); const m = findTitle(id);
+      car.querySelectorAll(':scope > div').forEach((d) => { d.style.cursor = 'pointer'; d.title = (findTitle(idOf(d)) || { title: 'EntXHub Podcasts' }).title; });
+      cap.innerHTML = m
+        ? `<b>${esc(m.title)}</b><span>${esc(m.type)} · ${m.year} · ${esc(m.genres)}</span><a class="entx-btn" href="player.html?id=${m.id}">&#9654; Play trailer</a><a class="entx-btn ghost" href="movie-details.html?id=${m.id}">Details</a>`
+        : `<b>EntXHub Podcasts</b><span>New episodes every week</span><a class="entx-btn" href="#podcast-section-button">Browse podcasts</a>`;
+    };
+    let wasSelected = false;
+    car.addEventListener('pointerdown', (e) => { const item = e.target.closest('#carousel > div'); wasSelected = !!(item && item.classList.contains('selected')); }, true);
+    car.addEventListener('click', (e) => {
+      const item = e.target.closest('#carousel > div');
+      if (!item || !wasSelected) return;
+      const id = idOf(item);
+      location.href = findTitle(id) ? 'movie-details.html?id=' + id : '#podcast-section-button';
+    });
+    // the carousel is shifted up with a CSS transform, so the caption is pinned just under the visible posters
+    document.body.appendChild(cap);
+    const place = () => { const r = car.getBoundingClientRect(); const imgs = [...car.querySelectorAll('img')].map((i) => i.getBoundingClientRect()).filter((b) => b.width && b.right > 0 && b.left < innerWidth); const bottom = Math.min(r.bottom, Math.max(r.top, ...imgs.map((b) => b.bottom))); cap.style.top = (bottom + window.scrollY + 8) + 'px'; };
+    window.addEventListener('resize', place); setTimeout(place, 60); setTimeout(place, 600); place();
+    new MutationObserver(() => { draw(); setTimeout(place, 450); }).observe(car, { subtree: true, attributes: true, attributeFilter: ['class'], childList: true });
+    draw();
   }
   function enhanceMovieDetails() {
-    const m = MOVIES.find((x) => x.id === params.get('id')) || MOVIES.find((x) => x.id === 'peaky-blinders');
+    const m = findTitle(params.get('id')) || findTitle('peaky-blinders');
     document.title = m.title + ' · EntXHub';
     const banner = document.querySelector('.movie-detail-banner img'); if (banner) { banner.src = m.img; banner.alt = m.title + ' poster'; }
-    const sub = document.querySelector('.detail-subtitle'); if (sub) sub.textContent = m.type;
+    const sub = document.querySelector('.detail-subtitle'); if (sub) sub.textContent = m.type + ' · ' + m.year;
     const title = document.querySelector('.detail-title');
     if (title) { const words = m.title.split(' '); const last = words.pop(); title.innerHTML = esc(words.join(' ')) + (words.length ? ' ' : '') + '<strong>' + esc(last) + '</strong>'; }
     const genreWrap = document.querySelector('.movie-detail .ganre-wrapper');
-    if (genreWrap) genreWrap.innerHTML = m.genres.split(', ').map((g, i, arr) => `<a href="movie.html">${esc(g)}${i < arr.length - 1 ? ',' : ''}</a>`).join(' ');
+    const section = { 'Movie': 'movie-section-button', 'Anime': 'anime-section-button', 'Web Series': 'webseries-section-button', 'Podcast': 'podcast-section-button' }[m.type];
+    if (genreWrap) genreWrap.innerHTML = m.genres.split(', ').map((g, i, arr) => `<a href="movie.html#${section}">${esc(g)}${i < arr.length - 1 ? ',' : ''}</a>`).join(' ');
     const story = document.querySelector('.storyline');
-    if (story && m.id !== 'peaky-blinders') story.textContent = `${m.title} is a ${m.genres.toLowerCase()} ${m.type.toLowerCase()} available to stream on EntXHub. Press play to watch the official trailer.`;
-    document.querySelectorAll('a[href="player.html"]').forEach((a) => a.setAttribute('href', 'player.html?id=' + m.id));
+    if (story) story.textContent = m.story;
+    document.querySelectorAll('a[href^="player.html"]').forEach((a) => a.setAttribute('href', 'player.html?id=' + m.id));
+    const content = document.querySelector('.movie-detail-content');
+    if (content && !content.querySelector('.entx-actions')) {
+      const act = document.createElement('div');
+      act.className = 'entx-actions';
+      act.innerHTML = `<a class="entx-btn" href="player.html?id=${m.id}">&#9654; ${m.type === 'Podcast' ? 'Play episode' : 'Play trailer'}</a><a class="entx-btn ghost" href="movie.html#${section}">More ${esc(m.type === 'Web Series' ? 'series' : m.type.toLowerCase() + (m.type === 'Anime' ? '' : 's'))}</a>`;
+      content.appendChild(act);
+    }
   }
   function recordHistory() {
-    const m = MOVIES.find((x) => x.id === params.get('id')) || MOVIES.find((x) => x.id === 'peaky-blinders');
+    const m = findTitle(params.get('id')) || findTitle('peaky-blinders');
     if (auth.current() && m) api('history', { body: { id: m.id } }).catch(() => {});
   }
   function enhancePlayer() {
-    const m = MOVIES.find((x) => x.id === params.get('id')) || MOVIES.find((x) => x.id === 'peaky-blinders');
-    const link = document.querySelector('.trailer-link');
-    if (link) {
-      link.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(m.title + ' official trailer');
-      const img = link.querySelector('img'); if (img) { img.src = m.img; img.alt = m.title; }
-      const p = link.querySelector('p'); if (p) p.innerHTML = '&#9654; Watch the official ' + esc(m.title) + ' trailer on YouTube';
-    }
-    document.querySelectorAll('h1, h2').forEach((h) => { if (/peaky/i.test(h.textContent)) h.textContent = m.title; });
+    const m = findTitle(params.get('id')) || findTitle('peaky-blinders');
+    document.title = m.title + ' · Trailer · EntXHub';
+    document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.75)), url("${m.img}")`;
+    const box = document.getElementById('video-container');
+    if (!box) return;
+    box.innerHTML = `<a href="movie-details.html?id=${m.id}" class="entx-back">&larr; Back to ${esc(m.title)}</a>
+      <div class="entx-frame"><iframe src="${embed(m.trailer)}" title="${esc(m.title)} ${m.type === 'Podcast' ? 'episode' : 'official trailer'}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+      <h1 class="entx-ptitle">${esc(m.title)}</h1><p class="entx-pmeta">${esc(m.type)} · ${m.year} · ${esc(m.genres)}</p>
+      <p class="entx-pmeta"><a href="${ytWatch(m.trailer)}" target="_blank" rel="noopener">Open on YouTube</a> · <a href="movie.html">Browse more titles</a></p>`;
+  }
+
+  // ---------- home page: every picture and section title leads somewhere ----------
+  function enhanceHome() {
+    const slideTargets = { 'logo 111.png': ['games.html', 'Games'], 'logo 112.png': ['events.html', 'Events'], 'logo 113.png': ['movie.html', 'Watch'], 'logo 114.png': ['movie.html#movie-section-button', 'Movies'], 'logo 115.png': ['events.html', 'Events'] };
+    const shopIds = { 'shop1.jpg': 'barbie-tshirt', 'shop3.jpg': 'batman-tshirt', 'shop4.jpg': 'dark-knight-shirt', 'shop5.jpg': 'captain-america' };
+    const eventIds = ['music-night', 'carnival', 'boat-parade', 'echoes-of-emotion'];
+    const target = (file) => {
+      if (slideTargets[file]) return slideTargets[file];
+      if (POSTERS[file]) return ['movie-details.html?id=' + POSTERS[file], findTitle(POSTERS[file]).title];
+      const ev = file.match(/^event(\d)\.jpeg$/); if (ev) return ['events.html#' + eventIds[ev[1] - 1], 'Events'];
+      if (GAMES[file]) return ['games.html?game=' + encodeURIComponent(file), GAMES[file][0]];
+      if (shopIds[file]) return ['product-info.html?id=' + shopIds[file], 'Shop'];
+      return null;
+    };
+    document.querySelectorAll('.mySlides img, .image-scroll-wrapper img').forEach((img) => {
+      if (img.closest('a')) return;
+      const t = target(decodeURIComponent(img.getAttribute('src').split('/').pop()));
+      if (!t) return;
+      const a = document.createElement('a'); a.href = t[0]; a.title = t[1]; a.className = 'entx-imglink';
+      img.parentNode.insertBefore(a, img); a.appendChild(img);
+    });
+    const sections = { movies: 'movie.html', events: 'events.html', games: 'games.html', shop: 'shop.html' };
+    document.querySelectorAll('.section-title h1').forEach((h) => {
+      const href = sections[h.textContent.trim().toLowerCase()]; if (!href || h.querySelector('a')) return;
+      h.innerHTML = `<a href="${href}">${esc(h.textContent.trim())} <span aria-hidden="true">&rarr;</span></a>`;
+    });
+  }
+
+  // ---------- resume where you left off ----------
+  // Every page you open is remembered per account (and for guests); after logging in you return to it.
+  const RESUME_SKIP = ['loginmain.html', 'signup.html', 'login.html'];
+  function rememberPage() {
+    if (RESUME_SKIP.includes(page)) return;
+    const here = page + location.search + location.hash;
+    store.set('last-page', here);
+    const u = auth.current(); if (u && u.email) { const all = store.get('last-pages', {}); all[u.email.toLowerCase()] = here; store.set('last-pages', all); }
+  }
+  function resumeTarget(email) {
+    const next = params.get('next'); if (next && !/^(https?:)?\/\//i.test(next)) return next;
+    const mine = email && store.get('last-pages', {})[email.toLowerCase()];
+    return mine || store.get('last-page', null) || 'index.html';
   }
 
   // ---------- search ----------
@@ -430,7 +580,7 @@
       ...MOVIES.map((m) => ({ title: m.title, sub: m.type, img: m.img, href: 'movie-details.html?id=' + m.id })),
       ...PRODUCTS.map((p) => ({ title: p.title, sub: 'Shop · ' + rs(p.price), img: p.img, href: 'product-info.html?id=' + p.id })),
       ...EVENTS.map((e) => ({ title: e.title, sub: 'Event · ' + rs(e.price), img: e.img, href: 'events.html' })),
-      ...Object.entries(GAMES).map(([f, [n, g]]) => ({ title: n, sub: 'Game · ' + g, img: 'game pictures/' + f, href: 'games.html' })),
+      ...Object.entries(GAMES).map(([f, [n, g]]) => ({ title: n, sub: 'Game · ' + g, img: gameImg(f), href: 'games.html?game=' + encodeURIComponent(f) })),
     ];
     const href = (d) => d.kind === 'product' ? 'product-info.html?id=' + d.id : d.kind === 'event' ? 'events.html' : 'movie-details.html?id=' + d.id;
     const sub = (d) => d.kind === 'product' ? 'Shop · ' + rs(d.price) : d.kind === 'event' ? 'Event · ' + rs(d.price) : d.type + ' · ' + (d.genres || []).slice(0, 2).join(', ');
@@ -498,7 +648,7 @@
     if (!user) { location.href = 'loginmain.html'; return; }
     const close = modal(`<h3>My account</h3><p>${esc(user.name)} · ${esc(user.email)}</p><div id="entx-acc-body"><p>Loading…</p></div>
       <button class="entx-btn" id="entx-logout">Log out</button>`, (m) => {
-      m.querySelector('#entx-logout').onclick = () => { auth.logOut(); toast('You have been logged out.'); setTimeout(() => location.reload(), 600); };
+      m.querySelector('#entx-logout').onclick = () => { rememberPage(); auth.logOut(); toast('You have been logged out.'); setTimeout(() => location.reload(), 600); };
     });
     try {
       const [me, orders, bookings, history] = await Promise.all([api('auth/me'), api('orders'), api('bookings'), api('history')]);
@@ -517,6 +667,8 @@
 
   // ---------- init ----------
   document.addEventListener('DOMContentLoaded', () => {
+    rememberPage();
+    if (page === 'index.html') enhanceHome();
     fixPlaceholderLinks();
     setupSearch();
     renderAuthButtons();
@@ -527,7 +679,7 @@
     if (page === 'shop.html') enhanceShop();
     if (page === 'product-info.html') enhanceProductPage();
     if (page === 'cart.html') renderCartPage();
-    if (page === 'events.html') enhanceEvents();
+    if (page === 'events.html') { enhanceEvents(); const t = location.hash && document.getElementById(location.hash.slice(1)); if (t) setTimeout(() => t.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200); }
     if (page === 'games.html') enhanceGames();
     if (page === 'movie.html' || page === 'showmore.html') enhanceMovieCards();
     if (page === 'movie-details.html') { enhanceMovieDetails(); recordHistory(); }
