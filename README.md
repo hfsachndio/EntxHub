@@ -38,6 +38,7 @@ Training, evaluation and model cards: [`ml/`](ml/README.md). Both models run in 
 | Database | MongoDB Atlas (free cluster via the Vercel integration): `users`, `carts`, `orders`, `bookings`, `catalog`, `reviews`, `wishlists`, `history`, `messages` with indexes; catalog seeded on first run |
 | Security | bcrypt password hashes, JWT bearer tokens, server-side prices, coupons, stock and seat checks, card numbers never stored, input validation |
 | SEO | Page titles and descriptions, Open Graph cards, Product and WebSite JSON-LD, canonical URLs, robots.txt and a sitemap of every product and title |
+| Analytics | Vercel Web Analytics and Speed Insights on every page (free tier, cookie-free) |
 | Tests | `npm test` — end-to-end API tests (in-memory store, same code paths) |
 
 Endpoints: `products`, `product`, `cart/quote`, `order`, `orders/cancel`, `reviews`, `wishlist`, `recommendations`, `similar`, `ai/sentiment`, `ai/models`, `config`, `auth/signup`, `auth/login`, `auth/me`, `catalog`, `events`, `cart` (GET/PUT), `orders`, `bookings`, `bookings/cancel`, `subscription`, `history`, `messages`, `health`.
