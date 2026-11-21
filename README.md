@@ -16,7 +16,7 @@ EntXHub is a multi-page entertainment website where visitors can browse **movies
 Training, evaluation and model cards: [`ml/`](ml/README.md). Both models run in the Node.js API, no paid AI service.
 
 ## Features
-- **Accounts:** sign up and log in with passwords hashed by bcrypt and a JWT session; demo Google/Facebook sign-in; "My account" with orders, bookings, plan and recently viewed titles
+- **Accounts:** sign up and log in with passwords hashed by bcrypt and a JWT session; "My account" with orders, bookings, plan and recently viewed titles
 - **Search:** live MongoDB search across movies, anime, web series, podcasts, events and products (titles, genres, categories)
 - **Watch:** 35 movies, web series, anime and podcasts; every poster, card and carousel slide opens its own details page, and Play opens an in-site player with the official trailer (YouTube privacy-enhanced embed)
 - **Shop (full e-commerce):** search, category/franchise/price filters and sorting; product pages with sizes, stock levels, size guide, sale prices, structured data and the related film's trailer; wishlist; reviews and ratings with verified-purchase badges; cart with quantity, save-for-later, discount codes (WELCOME10, ENTX200, FREESHIP) and a free-delivery progress bar; standard / express delivery
@@ -40,7 +40,7 @@ Training, evaluation and model cards: [`ml/`](ml/README.md). Both models run in 
 | SEO | Page titles and descriptions, Open Graph cards, Product and WebSite JSON-LD, canonical URLs, robots.txt and a sitemap of every product and title |
 | Tests | `npm test` — end-to-end API tests (in-memory store, same code paths) |
 
-Endpoints: `products`, `product`, `cart/quote`, `order`, `orders/cancel`, `reviews`, `wishlist`, `recommendations`, `similar`, `ai/sentiment`, `ai/models`, `config`, `auth/signup`, `auth/login`, `auth/demo`, `auth/me`, `catalog`, `events`, `cart` (GET/PUT), `orders`, `bookings`, `bookings/cancel`, `subscription`, `history`, `messages`, `health`.
+Endpoints: `products`, `product`, `cart/quote`, `order`, `orders/cancel`, `reviews`, `wishlist`, `recommendations`, `similar`, `ai/sentiment`, `ai/models`, `config`, `auth/signup`, `auth/login`, `auth/me`, `catalog`, `events`, `cart` (GET/PUT), `orders`, `bookings`, `bookings/cancel`, `subscription`, `history`, `messages`, `health`.
 
 ## Pages
 

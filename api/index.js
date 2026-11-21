@@ -55,19 +55,6 @@ const routes = {
     return { token: sign(user), user: publicUser(user) };
   },
 
-  // "Continue with Google/Facebook" demo: a per-provider demo account (no real OAuth).
-  "POST auth/demo": async (req, db) => {
-    const { provider } = await readBody(req);
-    const p = provider === "Facebook" ? "facebook" : "google";
-    const email = `guest.${p}@entxhub.demo`;
-    let user = await db.findUser(email);
-    if (!user) {
-      user = { _id: id("U"), email, name: `${p === "google" ? "Google" : "Facebook"} user`, passwordHash: await bcrypt.hash(crypto.randomBytes(16).toString("hex"), 10), createdAt: new Date() };
-      try { await db.insertUser(user); } catch (e) { if (e.code !== 11000) throw e; user = await db.findUser(email); }
-    }
-    return { token: sign(user), user: publicUser(user) };
-  },
-
   "GET auth/me": async (req, db) => {
     const me = auth(req);
     const user = await db.findUser(me.email);
@@ -226,7 +213,7 @@ export default async function handler(req, res) {
     if (!route) throw new HttpError(404, "Not found");
     const db = await getRepo();
     const out = await route(req, db);
-    res.statusCode = req.method === "POST" && path !== "auth/login" && path !== "auth/demo" ? 201 : 200;
+    res.statusCode = req.method === "POST" && path !== "auth/login" ? 201 : 200;
     res.end(JSON.stringify(out));
   } catch (e) {
     const status = e.status ?? 500;

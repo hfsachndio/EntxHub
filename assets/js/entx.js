@@ -179,7 +179,6 @@
     async start(res) { store.set('session', { token: res.token, email: res.user.email, name: res.user.name, plan: res.user.plan }); await cart.mergeGuest(); },
     async signUp(email, password) { await auth.start(await api('auth/signup', { body: { email, password } })); },
     async logIn(email, password) { await auth.start(await api('auth/login', { body: { email, password } })); },
-    async demo(provider) { await auth.start(await api('auth/demo', { body: { provider } })); },
     logOut() { store.set('session', null); store.set('cart', []); },
   };
 
@@ -216,14 +215,6 @@
           setTimeout(() => { location.href = resumeTarget((auth.current() || {}).email); }, 900);
         } catch (err) { toast(err.message); const submit = form.querySelector('button, [type=submit]'); if (submit) submit.disabled = false; }
       })();
-    });
-    form.querySelectorAll('.go, .fb').forEach((el) => {
-      el.style.cursor = 'pointer';
-      el.addEventListener('click', async () => {
-        const provider = el.classList.contains('go') ? 'Google' : 'Facebook';
-        try { await auth.demo(provider); toast('Signed in with a ' + provider + ' demo account.'); setTimeout(() => { location.href = resumeTarget((auth.current() || {}).email); }, 900); }
-        catch (err) { toast(err.message); }
-      });
     });
   }
 
